@@ -1,7 +1,3 @@
-require( 'babel-core/register' )({
-  stage: 0
-});
-
 var gulp = require( 'gulp' );
 var arceus = require( 'arceus' );
 
