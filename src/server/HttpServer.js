@@ -1,8 +1,8 @@
 export default [
-  'http', 'HttpRequestPipeline', 'HttpRequest', 'HttpResponse',
-  'result/StatusCode',
+  'http', 'MiddlewarePipeline', 'HttpRequest', 'HttpResponse',
+  'result/StatusCode', 'common/formatError',
 function(
-  http, HttpRequestPipeline, HttpRequest, HttpResponse, StatusCode
+  http, MiddlewarePipeline, HttpRequest, HttpResponse, StatusCode, formatError
 ) {
   return class HttpServer {
     constructor() {
@@ -48,7 +48,7 @@ function(
     async _listener_onRequest( request, response ) {
       response = new HttpResponse( response );
       try {
-        let pipeline = new HttpRequestPipeline(
+        let pipeline = new MiddlewarePipeline(
           this._middleware.slice()
         );
         let result;
@@ -60,7 +60,7 @@ function(
             throw new Error( 'Expected result to be an HttpResult.' );
           }
         } catch ( err ) {
-          console.log( err.stack || `${ err.name }: ${ err.message }` );
+          console.log( formatError( err ) );
           result = new StatusCode( 500 );
         }
         await result.writeBodyAsync(
@@ -68,7 +68,7 @@ function(
           await result.writeHeadAsync( response )
         );
       } catch ( err ) {
-        console.log( err.stack || `${ err.name }: ${ err.message }` );
+        console.log( formatError( err ) );
         response.statusCode = 500;
         await response.endAsync();
       }

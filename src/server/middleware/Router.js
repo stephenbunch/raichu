@@ -1,6 +1,6 @@
 export default [
-  'result/StatusCode', 'HttpRequestPipeline', 'path', 'HttpRoute',
-function( StatusCode, HttpRequestPipeline, path, HttpRoute ) {
+  'result/StatusCode', 'MiddlewarePipeline', 'path', 'HttpRoute',
+function( StatusCode, MiddlewarePipeline, path, HttpRoute ) {
   return class Router {
     constructor() {
       this._routes = [];
@@ -36,7 +36,7 @@ function( StatusCode, HttpRequestPipeline, path, HttpRoute ) {
           if ( match ) {
             request.params = match;
             request.config = route.config;
-            let pipeline = new HttpRequestPipeline(
+            let pipeline = new MiddlewarePipeline(
               this._middleware.concat([ route ])
             );
             let result = await pipeline.invokeAsync( request );

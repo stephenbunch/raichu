@@ -1,4 +1,6 @@
-export default [ 'react', 'cookie', function( React, $cookie ) {
+export default [
+  'react', 'cookie', 'common/formatError',
+function( React, $cookie, formatError ) {
   return class PageRouter {
     /**
      * @param {PageRouterDelegate} delegate
@@ -23,7 +25,7 @@ export default [ 'react', 'cookie', function( React, $cookie ) {
             claims = this._delegate.decodeToken( cookie.access_token );
           }
         } catch ( err ) {
-          console.log( err.stack || `${ err.name }: ${ err.message }` );
+          console.log( formatError( err ) );
         }
       }
       if (

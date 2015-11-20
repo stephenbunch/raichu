@@ -1,8 +1,15 @@
-export default [ 'SocketChannel', function( SocketChannel ) {
+export default [ 'SocketChannel', '@event', function( SocketChannel, event ) {
   return class Socket {
     constructor( ws ) {
       this._ws = ws;
+      this._ws.on( 'close', ::this._ws_onClose );
       this._channels = [];
+    }
+
+    @event didClose
+
+    get url() {
+      return this._ws.upgradeReq.url;
     }
 
     channel() {
@@ -17,13 +24,17 @@ export default [ 'SocketChannel', function( SocketChannel ) {
       return channel;
     }
 
-    detach() {
+    close( ...args ) {
+      this._ws.close.apply( this._ws, args );
+    }
+
+    reset() {
       this._channels.slice().forEach( x => x.close() );
     }
 
-    close( ...args ) {
-      this.detach();
-      this._ws.close.apply( this._ws, args );
+    _ws_onClose() {
+      this.reset();
+      this._didClose.raise();
     }
   };
 }];

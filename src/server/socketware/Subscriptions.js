@@ -1,6 +1,6 @@
 export default [
-  'urijs', 'common/UrlPattern', 'HttpChannel', 'path', 'celebi',
-function( URI, UrlPattern, HttpChannel, path, Celebi ) {
+  'urijs', 'common/UrlPattern', 'HttpChannel', 'path', 'celebi', 'common/formatError',
+function( URI, UrlPattern, HttpChannel, path, Celebi, formatError ) {
   return class Subscriptions {
     constructor() {
       this._channels = [];
@@ -17,11 +17,11 @@ function( URI, UrlPattern, HttpChannel, path, Celebi ) {
       this._channels.push( channel );
     }
 
-    invokeAsync( claims, accept ) {
-      var socket = accept();
+    async invokeAsync( socket, next ) {
+      var channel = socket.channel();
       var subscriptions = {};
 
-      socket.on( 'subscribe', async ( path ) => {
+      channel.on( 'subscribe', async ( path ) => {
         try {
           if ( subscriptions[ path ] ) {
             return;
@@ -32,7 +32,7 @@ function( URI, UrlPattern, HttpChannel, path, Celebi ) {
             dispose: () => cleanup.forEach( x => x() )
           };
 
-          var context = this._contextForPath( claims, path );
+          var context = this._contextForPath( socket.claims, path );
           if ( !context ) {
             return;
           }
@@ -64,11 +64,11 @@ function( URI, UrlPattern, HttpChannel, path, Celebi ) {
               if ( schema ) {
                 let result = schema.validate( data );
                 if ( result.error ) {
-                  console.log( `${ result.error.name }: ${ result.error.message }` );
+                  console.log( formatError( result.error ) );
                   return;
                 }
               }
-              socket.send( path, data );
+              channel.send( path, data );
             },
 
             listen: ( callback ) => {
@@ -77,18 +77,18 @@ function( URI, UrlPattern, HttpChannel, path, Celebi ) {
                   data = schema.cast( data );
                   let result = schema.validate( data );
                   if ( result.error ) {
-                    console.log( `${ result.error.name }: ${ result.error.message }` );
+                    console.log( formatError( result.error ) );
                     return;
                   }
                 }
                 try {
                   await Promise.resolve().then( () => callback( data ) );
                 } catch ( err ) {
-                  console.log( err.stack || `${ err.name }: ${ err.message }` );
+                  console.log( formatError( err ) );
                 }
               };
-              socket.on( path, listener );
-              cleanup.push( () => socket.off( path, listener ) );
+              channel.on( path, listener );
+              cleanup.push( () => channel.off( path, listener ) );
             }
           };
 
@@ -100,21 +100,23 @@ function( URI, UrlPattern, HttpChannel, path, Celebi ) {
           }
 
         } catch ( err ) {
-          console.log( err.stack || `${ err.name }: ${ err.message }` );
+          console.log( formatError( err ) );
         }
       });
 
-      socket.on( 'unsubscribe', path => {
+      channel.on( 'unsubscribe', path => {
         if ( subscriptions[ path ] ) {
           subscriptions[ path ].dispose();
           delete subscriptions[ path ];
         }
       });
 
-      socket.didClose += () => {
+      channel.didClose += () => {
         Object.values( subscriptions ).forEach( x => x.dispose() );
         subscriptions = {};
       };
+
+      await next.invokeAsync( socket );
     }
 
     _contextForPath( claims, path ) {

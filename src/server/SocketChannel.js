@@ -1,6 +1,6 @@
 export default [
-  'events', '@bind', '@event',
-function( { EventEmitter }, bind, event ) {
+  'events', '@bind', '@event', 'common/formatError',
+function( { EventEmitter }, bind, event, formatError ) {
   return class SocketChannel {
     constructor( ws ) {
       this._ws = ws;
@@ -26,12 +26,16 @@ function( { EventEmitter }, bind, event ) {
 
     send( event, data ) {
       if ( this._ws ) {
-        this._ws.send(
-          JSON.stringify({
-            type: event,
-            body: data
-          })
-        );
+        try {
+          this._ws.send(
+            JSON.stringify({
+              type: event,
+              body: data
+            })
+          );
+        } catch ( err ) {
+          console.log( formatError( err ) );
+        }
       }
     }
 
@@ -47,7 +51,7 @@ function( { EventEmitter }, bind, event ) {
         message = JSON.parse( message );
         this._events.emit( message.type, message.body );
       } catch ( err ) {
-        console.log( err.stack || `${ err.name }: ${ err.message }` );
+        console.log( formatError( err ) );
       }
     }
   };

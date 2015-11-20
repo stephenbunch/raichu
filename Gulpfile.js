@@ -2,7 +2,10 @@ var gulp = require( 'gulp' );
 var arceus = require( 'arceus' );
 
 gulp.task( 'make', function() {
-  return arceus.js.babelify( 'src/**/*', 'dist' );
+  return arceus.js.babelify({
+    source: 'src/**/*',
+    outdir: 'dist'
+  });
 });
 
 gulp.task( 'clean', function() {
@@ -10,7 +13,13 @@ gulp.task( 'clean', function() {
 });
 
 gulp.task( 'watch', function() {
-  arceus.js.babelifyWatch( 'src/**/*', 'dist' );
+  arceus.js.babelifyWatch({
+    source: 'src/**/*',
+    outdir: 'dist',
+    callback() {
+      arceus.util.log( 'build succeeded' );
+    }
+  });
 });
 
 gulp.task( 'default', function() {

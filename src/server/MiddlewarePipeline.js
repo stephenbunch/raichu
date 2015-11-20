@@ -1,30 +1,30 @@
 export default [ function() {
   return class MiddlewarePipeline {
     /**
-     * @param {Array.<HttpRequestMiddleware>} middleware
+     * @param {Array.<Middleware>} middleware
      */
     constructor( middleware ) {
       this._middleware = middleware;
     }
 
     /**
-     * @param {HttpRequest} request
+     * @param {Object} data
      * @returns {Promise}
      */
-    invokeAsync( request ) {
+    invokeAsync( data ) {
       var i = -1;
       var len = this._middleware.length;
       var next = {
-        invokeAsync: request => {
+        invokeAsync: data => {
           i += 1;
           if ( i < len ) {
-            return this._middleware[ i ].invokeAsync( request, next );
+            return this._middleware[ i ].invokeAsync( data, next );
           } else {
             return Promise.resolve();
           }
         }
       };
-      return next.invokeAsync( request );
+      return next.invokeAsync( data );
     }
   };
 }];

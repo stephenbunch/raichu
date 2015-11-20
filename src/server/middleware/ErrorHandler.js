@@ -1,4 +1,4 @@
-export default [ 'Content', function( Content ) {
+export default [ 'Content', 'common/formatError', function( Content, formatError ) {
   return class ErrorHandler {
     async invokeAsync( request, next ) {
       try {
@@ -11,7 +11,7 @@ export default [ 'Content', function( Content ) {
             err.output.headers
           );
         } else {
-          console.log( err.stack || `${ err.name }: ${ err.message }` );
+          console.log( formatError( err ) );
           return new Content( 500, {
             errors: [{
               message: err.message
