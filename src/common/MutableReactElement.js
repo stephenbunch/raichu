@@ -1,6 +1,6 @@
 export default [
-  'react', 'lodash.assign', 'immutable', 'util/querySelectorAll',
-  'util/querySelector',
+  'react', 'lodash.assign', 'immutable', 'querySelectorAll',
+  'querySelector',
 function( React, assign, Immutable, querySelectorAll, querySelector ) {
   return class MutableReactElement {
     constructor( element ) {

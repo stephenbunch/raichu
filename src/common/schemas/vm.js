@@ -1,5 +1,5 @@
 export default [
-  'celebi', 'schemas/list', '$tracker', 'util/formatObject', 'util/isEqual',
+  'celebi', 'schemas/list', '$tracker', 'formatObject', 'isEqual',
 function( Celebi, list, $tracker, formatObject, isEqual ) {
   return function vm( schema ) {
     if ( Celebi.isSchema( schema ) ) {

@@ -1,5 +1,5 @@
 export default [
-  'util/walkChildren', 'immutable',
+  'walkChildren', 'immutable',
 function( walkChildren, Immutable ) {
   return function( children, selector ) {
     var result = [];
