@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/server",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublish": "gulp"
   },
   "author": "Stephen Bunch",
   "license": "MIT",
