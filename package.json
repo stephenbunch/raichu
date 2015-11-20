@@ -1,0 +1,45 @@
+{
+  "name": "raichu",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist/server",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Stephen Bunch",
+  "license": "MIT",
+  "dependencies": {
+    "@stephenbunch/bind": "^0.1.1",
+    "@stephenbunch/event": "^0.2.0",
+    "accepts": "^1.3.0",
+    "bcrypt": "^0.8.5",
+    "browsernizr": "^2.0.1",
+    "celebi": "^0.2.9",
+    "checksum": "^0.1.1",
+    "compressible": "^2.0.6",
+    "content-type": "^1.0.1",
+    "cookie": "^0.2.3",
+    "immutable": "^3.7.5",
+    "jsonwebtoken": "^5.4.1",
+    "jws": "^3.1.0",
+    "lodash.assign": "^3.2.0",
+    "lodash.find": "^3.2.1",
+    "lodash.isequal": "^3.0.4",
+    "lodash.isplainobject": "^3.2.0",
+    "lodash.merge": "^3.3.2",
+    "mime": "^1.3.4",
+    "moment": "^2.10.6",
+    "path-to-regexp": "^1.2.1",
+    "raw-body": "^2.1.4",
+    "react": "^0.14.3",
+    "type-is": "^1.6.9",
+    "urijs": "^1.17.0",
+    "ws": "^0.8.0",
+    "zxcvbn": "^4.1.1"
+  },
+  "devDependencies": {
+    "arceus": "^0.2.11",
+    "babel-core": "^6.2.1",
+    "gulp": "^3.9.0"
+  }
+}
