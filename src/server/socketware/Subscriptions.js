@@ -111,7 +111,7 @@ function( URI, UrlPattern, HttpChannel, path, Celebi, formatError ) {
         }
       });
 
-      channel.didClose += () => {
+      channel.onClose += () => {
         Object.values( subscriptions ).forEach( x => x.dispose() );
         subscriptions = {};
       };

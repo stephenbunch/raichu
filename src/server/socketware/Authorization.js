@@ -44,7 +44,7 @@ function(
         }
       });
 
-      channel.didClose += () => {
+      channel.onClose += () => {
         clearTimeout( expireTimeout );
       };
 

@@ -2,13 +2,13 @@ export default [
   'events', '@bind', '@event', 'common/formatError',
 function( { EventEmitter }, bind, event, formatError ) {
   return class SocketChannel {
-    constructor( ws ) {
-      this._ws = ws;
-      this._ws.on( 'message', this._ws_onMessage );
+    constructor( socket ) {
+      this._socket = socket;
+      this._socket.onMessage += this._socket_onMessage;
       this._events = new EventEmitter();
     }
 
-    @event didClose
+    @event onClose
 
     on( ...args ) {
       this._events.on.apply( this._events, args );
@@ -25,28 +25,24 @@ function( { EventEmitter }, bind, event, formatError ) {
     }
 
     send( event, data ) {
-      if ( this._ws ) {
-        try {
-          this._ws.send(
-            JSON.stringify({
-              type: event,
-              body: data
-            })
-          );
-        } catch ( err ) {
-          console.log( formatError( err ) );
-        }
+      if ( this._socket ) {
+        this._socket.send(
+          JSON.stringify({
+            type: event,
+            body: data
+          })
+        );
       }
     }
 
     close() {
-      this._ws.removeListener( 'message', this._ws_onMessage );
-      this._ws = null;
-      this._didClose.raise();
+      this._socket.onMessage -= this._socket_onMessage;
+      this._socket = null;
+      this._onClose.raise();
     }
 
     @bind
-    _ws_onMessage( message ) {
+    _socket_onMessage( message ) {
       try {
         message = JSON.parse( message );
         this._events.emit( message.type, message.body );

@@ -42,7 +42,8 @@ export default [ 'NodeBundle', function( NodeBundle ) {
   bundle.register( 'setTimeout', setTimeout );
   bundle.register( 'type-is', require( 'type-is' ) );
   bundle.register( 'urijs', require( 'urijs' ) );
-  bundle.register( 'ws', require( 'ws' ) );
+  bundle.register( 'WebSocket', require( 'ws' ) );
+  bundle.register( 'WebSocketServer', require( 'ws' ).Server );
   bundle.register( 'zlib', require( 'zlib' ) );
   bundle.register( 'zxcvbn', require( 'zxcvbn' ) );
 

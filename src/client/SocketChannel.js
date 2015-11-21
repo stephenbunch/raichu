@@ -11,7 +11,7 @@ export default [ '@event', '@bind', function( event, bind ) {
       this._socket.didConnect += this._socket_didConnect;
     }
 
-    @event didClose
+    @event onClose
 
     /**
      * @param {String} event
@@ -98,7 +98,7 @@ export default [ '@event', '@bind', function( event, bind ) {
         this._socket.didConnect -= this._socket_didConnect;
         this._socket = null;
         this._handlers = {};
-        this._didClose.raise();
+        this._onClose.raise();
       }
     }
 

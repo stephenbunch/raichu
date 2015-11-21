@@ -1,12 +1,13 @@
 export default [
-  'Socket', '@bind', 'ws', 'common/formatError', 'MiddlewarePipeline',
-function( Socket, bind, ws, formatError, MiddlewarePipeline ) {
+  'Socket', '@bind', 'WebSocketServer', 'common/formatError',
+  'MiddlewarePipeline',
+function( Socket, bind, WebSocketServer, formatError, MiddlewarePipeline ) {
   return class SocketServer {
     /**
      * @param {http.Server} server
      */
     constructor( server ) {
-      this._server = new ws.Server({ server });
+      this._server = new WebSocketServer({ server });
       this._server.on( 'connection', this._server_onConnection );
       this._middleware = [];
     }

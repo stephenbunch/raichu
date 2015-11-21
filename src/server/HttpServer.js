@@ -25,6 +25,10 @@ function(
       this._middleware.push( middleware );
     }
 
+    dispose() {
+      this._listener.close();
+    }
+
     /**
      * @param {Number} port
      * @returns {Promise}

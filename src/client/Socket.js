@@ -58,7 +58,7 @@ function( SocketChannel, event, bind, moment, WebSocket ) {
       var channel = new SocketChannel( this );
       this._channels.push( channel );
 
-      channel.didClose.addListenerOnce( () => {
+      channel.onClose.addListenerOnce( () => {
         var index = this._channels.indexOf( channel );
         if ( index > -1 ) {
           this._channels.splice( index, 1 );
