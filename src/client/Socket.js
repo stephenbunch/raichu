@@ -9,15 +9,6 @@ function( SocketChannel, event, bind, moment, WebSocket, URI, assign ) {
      * @param {http/AuthorizationService} auth
      */
     constructor({ url, auth }) {
-      var indexOfColon = url.indexOf( ':' );
-      var protocol = url.substr( 0, indexOfColon );
-      if ( !protocol || protocol === 'http' ) {
-        protocol = 'ws';
-      } else {
-        protocol = 'wss';
-      }
-      url = protocol + url.substr( indexOfColon );
-
       this._url = url;
       this._queue = [];
       this._ws = null;
