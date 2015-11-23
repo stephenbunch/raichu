@@ -5,8 +5,8 @@ function(
   http, MiddlewarePipeline, HttpRequest, HttpResponse, StatusCode, formatError
 ) {
   return class HttpServer {
-    constructor() {
-      this._listener = new http.Server();
+    constructor( listener ) {
+      this._listener = listener || new http.Server();
       this._listener.on( 'request', ::this._listener_onRequest );
       this._middleware = [];
     }
