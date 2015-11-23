@@ -1,6 +1,7 @@
 export default [
-  'SocketChannel', '@event', '@bind', 'moment', 'WebSocket',
-function( SocketChannel, event, bind, moment, WebSocket ) {
+  'SocketChannel', '@event', '@bind', 'moment', 'WebSocket', 'urijs',
+  'lodash.assign',
+function( SocketChannel, event, bind, moment, WebSocket, URI, assign ) {
 
   return class Socket {
     /**
@@ -138,7 +139,13 @@ function( SocketChannel, event, bind, moment, WebSocket ) {
         return;
       }
       this._token = token;
-      this._ws = new WebSocket( this._url + '/?token=' + token.value );
+      var uri = new URI( this._url );
+      uri.query(
+        assign( URI.parseQuery( uri.query() ), {
+          token: token.value
+        })
+      );
+      this._ws = new WebSocket( uri.toString() );
       this._ws.onclose = this._ws_onClose.bind( this );
       this._ws.onmessage = this._ws_onMessage.bind( this );
       this._ws.onopen = this._ws_onOpen.bind( this );
