@@ -1,23 +1,28 @@
 export default [
-  'react', 'common/$tracker', 'common/schemas/vm',
-function( React, $tracker, vm ) {
+  'react', 'common/$tracker', 'common/schemas/vm', 'common/propTypesFromSchema',
+function( React, $tracker, vm, propTypesFromSchema ) {
   return function( name, spec ) {
     var Component = function() {};
     Component.prototype = spec;
+
+    var propsSchema = spec.propTypes && vm( spec.propTypes );
+    var stateSchema = spec.stateTypes && vm( spec.stateTypes );
+    var contextSchema = spec.contextTypes && vm( spec.contextTypes );
+
     return React.createClass({
       displayName: name,
 
       childContextTypes: {
-        ...spec.childContextTypes,
+        ...propTypesFromSchema( spec.childContextTypes || {} ),
         _state: React.PropTypes.object.isRequired
       },
 
       contextTypes: {
-        ...spec.contextTypes,
+        ...propTypesFromSchema( spec.contextTypes || {} ),
         _state: React.PropTypes.object.isRequired
       },
 
-      _getStore() {
+      _init() {
         if ( !this._storeId ) {
           this._storeId = this.context._state.uid++;
           if ( !this.context._state.store.has( this._storeId ) ) {
@@ -32,22 +37,26 @@ function( React, $tracker, vm ) {
           } else {
             this.context._state.store.get( this._storeId ).uid = 0;
           }
+          this._store = this.context._state.store.get( this._storeId );
+          this._context = contextSchema && contextSchema.cast( this.context );
+          this._props = propsSchema && propsSchema.cast() || {};
+          Object.assign( this._props, this.props );
         }
-        return this.context._state.store.get( this._storeId );
+        return this;
       },
 
       getChildContext() {
         var childContext;
         if ( spec.getChildContext ) {
           let component = new Component();
-          component.context = this.context;
+          component.context = this._context;
           childContext = component.getChildContext();
         }
         return {
           ...childContext,
           _state: {
             ...this.context._state,
-            ...this._getStore()
+            ...this._init()._store
           }
         };
       },
@@ -62,17 +71,16 @@ function( React, $tracker, vm ) {
       },
 
       render() {
-        var store = this._getStore();
+        var store = this._init()._store;
         var component = new Component();
-        component.context = this.context;
-        component.props = vm( spec.propTypes || {} ).cast();
-        Object.assign( component.props, this.props );
+        component.context = this._context;
+        component.props = this._props;
 
         if ( !store.init ) {
           store.init = true;
 
-          if ( spec.stateTypes ) {
-            store.state = vm( spec.stateTypes ).cast();
+          if ( stateSchema ) {
+            store.state = stateSchema.cast();
           }
 
           if ( component.initialAction ) {

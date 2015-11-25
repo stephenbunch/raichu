@@ -1,10 +1,17 @@
 export default [
   'react', 'common/$tracker', 'EventEmitter', 'react-dom', 'common/schemas/vm',
-  'lodash.assign',
-function( React, $tracker, EventEmitter, ReactDOM, vm, assign ) {
+  'lodash.assign', 'common/propTypesFromSchema',
+function(
+  React, $tracker, EventEmitter, ReactDOM, vm, assign, propTypesFromSchema
+) {
   return function( name, spec ) {
     var Component = function() {};
     Component.prototype = spec;
+
+    var propsSchema = spec.propTypes && vm( spec.propTypes );
+    var stateSchema = spec.stateTypes && vm( spec.stateTypes );
+    var contextSchema = spec.contextTypes && vm( spec.contextTypes );
+
     return React.createClass({
       displayName: name,
 
@@ -14,7 +21,8 @@ function( React, $tracker, EventEmitter, ReactDOM, vm, assign ) {
         }
       },
 
-      contextTypes: spec.contextTypes,
+      contextTypes: spec.contextTypes && propTypesFromSchema( spec.contextTypes ),
+      childContextTypes: spec.childContextTypes && propTypesFromSchema( spec.childContextTypes ),
 
       getBinding() {
         return this._binding || null;
@@ -30,19 +38,19 @@ function( React, $tracker, EventEmitter, ReactDOM, vm, assign ) {
       },
 
       getInitialState() {
-        this._propSchema = vm( spec.propTypes || {} );
-        this._props = this._propSchema.cast();
+        this._props = propsSchema && propsSchema.cast() || {};
         assign( this._props, this.props );
+        this._context = contextSchema && contextSchema.cast( this.context );
 
         this._autoRender = $tracker.autorun();
         this._autoAction = $tracker.autorun();
 
-        if ( spec.stateTypes ) {
-          this._state = vm( spec.stateTypes ).cast();
+        if ( stateSchema ) {
+          this._state = stateSchema.cast();
           if ( spec.initialAction ) {
             this._autoAction.replace( () => {
               var component = new Component();
-              component.context = this.context;
+              component.context = this._context;
               component.props = this._props;
               component.state = this._state;
               component.initialAction();
@@ -67,7 +75,7 @@ function( React, $tracker, EventEmitter, ReactDOM, vm, assign ) {
             getElement: () => ReactDOM.findDOMNode( this ),
             props: this._props,
             getRefs: () => this.refs,
-            context: this.context
+            context: this._context
           });
         }
       },
@@ -88,7 +96,7 @@ function( React, $tracker, EventEmitter, ReactDOM, vm, assign ) {
             let component = new Component();
             component.state = this._state;
             component.props = this._props;
-            component.context = this.context;
+            component.context = this._context;
             component.dispatch = this._dispatch;
             element = component.render();
           } else {
