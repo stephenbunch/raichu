@@ -75,24 +75,16 @@ export default [ 'immutable', function( Immutable ) {
         if ( instance ) {
           if ( this._deps.has( instance ) ) {
             if ( path ) {
-              for ( let dependencyPath of this._deps.get( instance ) ) {
-                if (
-                  path === dependencyPath || (
-                    typeof dependencyPath === 'string' &&
-                    typeof path === 'string' &&
-                    dependencyPath.startsWith( path + '.' )
-                  )
-                ) {
-                  this._run();
-                  break;
-                }
+              if ( this._deps.get( instance ).has( path ) ) {
+                this._run();
+              } else {
+                // Don't run if a path was specified, but wasn't depended on.
               }
-              // Else, don't run.
             } else {
               this._run();
             }
           } else {
-            // Don't run.
+            // Don't run if the instance wasn't depended on.
           }
         } else {
           this._run();

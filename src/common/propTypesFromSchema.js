@@ -25,11 +25,11 @@ export default [ 'react', 'celebi', function( React, Celebi ) {
 
   function transformShape( shape ) {
     var spec = {};
-    for ( let path of shape.attributes.paths ) {
+    for ( let key in shape.attributes.keys ) {
       let value;
-      switch ( path.value.attributes.type ) {
+      switch ( shape.attributes.keys[ key ].attributes.type ) {
         case 'shape':
-          value = transformShape( path.value );
+          value = transformShape( shape.attributes.keys[ key ] );
           break;
         case 'string':
           value = React.PropTypes.string;
@@ -50,7 +50,7 @@ export default [ 'react', 'celebi', function( React, Celebi ) {
           value = React.PropTypes.any;
           break;
       }
-      path.set( spec, value );
+      spec[ key ] = value;
     }
     return spec;
   }

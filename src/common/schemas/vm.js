@@ -7,7 +7,7 @@ function( Celebi, list, $tracker, formatObject, isEqual ) {
         throw new Error( 'Schema must be an shape.' );
       }
     } else {
-      schema = Celebi.transformObject( schema, Celebi.shape );
+      schema = Celebi.shape( schema );
     }
     schema = schema.transform( function transform( node ) {
       if ( node.attributes.type === 'array' ) {
@@ -21,9 +21,7 @@ function( Celebi, list, $tracker, formatObject, isEqual ) {
     return schema.extend({
       attributes: {
         type: 'vm',
-        paths: schema.attributes.paths.map( path => {
-          return new Celebi.Path( path.selector, path.value );
-        })
+        keys: schema.attributes.keys
       },
 
       cast( source, options ) {
@@ -31,36 +29,36 @@ function( Celebi, list, $tracker, formatObject, isEqual ) {
           source = {};
         }
         var model = {};
-        for ( let path of this.attributes.paths ) {
-          let pathValue;
+        for ( let key in this.attributes.keys ) {
+          let _value;
           let set = ( value, isFirstRun ) => {
-            value = path.value.cast( value );
-            if ( !isEqual( value, pathValue ) ) {
-              pathValue = value;
+            value = this.attributes.keys[ key ].cast( value );
+            if ( !isEqual( value, _value ) ) {
+              _value = value;
               if ( !isFirstRun ) {
-                $tracker.changed( model, path.selector );
+                $tracker.changed( model, key );
               }
             }
           };
-          path.override( model, {
-            initialize: false,
-            persist: true,
+          Object.defineProperty( model, key, {
+            enumerable: true,
+            configurable: true,
             get: () => {
-              $tracker.depend( model, path.selector );
-              return pathValue;
+              $tracker.depend( model, key );
+              return _value;
             },
             set: value => set( value, false )
           });
           $tracker.attach( comp => {
-            set( path.get( source ), comp && comp.isFirstRun );
+            set( source[ key ], comp && comp.isFirstRun );
           });
         }
         model.toObject = () => {
           var obj = {};
-          for ( let path of this.attributes.paths ) {
-            let value = formatObject( path.get( model ) );
+          for ( let key in this.attributes.keys ) {
+            let value = formatObject( model[ key ] );
             if ( value !== undefined ) {
-              path.set( obj, value );
+              obj[ key ] = value;
             }
           }
           return obj;
