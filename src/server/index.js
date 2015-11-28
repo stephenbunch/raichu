@@ -25,7 +25,6 @@ export default [ 'NodeBundle', function( NodeBundle ) {
   bundle.register( 'checksum', require( 'checksum' ) );
   bundle.register( 'compressible', require( 'compressible' ) );
   bundle.register( 'content-type', require( 'content-type' ) );
-  bundle.register( 'cookie', require( 'cookie' ) );
   bundle.register( 'events', require( 'events' ) );
   bundle.register( 'fs', require( 'fs' ) );
   bundle.register( 'http', require( 'http' ) );

@@ -1,6 +1,4 @@
-export default [
-  'react', 'cookie', 'common/formatError',
-function( React, $cookie, formatError ) {
+export default [ 'react', function( React ) {
   return class PageRouter {
     /**
      * @param {PageRouterDelegate} delegate
@@ -14,29 +12,12 @@ function( React, $cookie, formatError ) {
      * @param {HttpRequestMiddleware} next
      */
     async invokeAsync( request, next ) {
-      let cookie = $cookie.parse( request.headers.cookie || '' );
       let claims = request.claims;
       if ( claims && Object.keys( claims ).length === 0 ) {
         claims = null;
       }
       if ( !claims ) {
-        try {
-          if ( cookie.access_token ) {
-            claims = this._delegate.decodeToken( cookie.access_token );
-          }
-        } catch ( err ) {
-          console.log( formatError( err ) );
-        }
-      }
-      if (
-        claims &&
-        (
-          !claims.user_id ||
-          !claims.profile_type ||
-          !claims.time_zone
-        )
-      ) {
-        claims = null;
+        claims = this._delegate.parseClaims( request );
       }
       let routes = this._delegate.routesForUser({
         isLoggedIn: !!claims,
