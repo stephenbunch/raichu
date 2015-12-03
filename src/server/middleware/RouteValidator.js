@@ -6,10 +6,7 @@ export default [ 'celebi', function( Celebi ) {
         let validate = request.config.validate;
         for ( let prop in validate ) {
           if ( validate[ prop ] ) {
-            let schema = validate[ prop ];
-            if ( typeof schema.validate !== 'function' ) {
-              schema = Celebi.shape( schema ).label( prop );
-            }
+            let schema = Celebi.parse( validate[ prop ] );
             let result = schema.validate( request[ prop ] );
             if ( result.error ) {
               if ( result.error.details ) {
