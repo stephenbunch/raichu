@@ -1,8 +1,8 @@
 export default [
   'react', 'common/$tracker', 'EventEmitter', 'react-dom', 'common/schemas/vm',
-  'lodash.assign', 'common/propTypesFromSchema',
+  'common/propTypesFromSchema',
 function(
-  React, $tracker, EventEmitter, ReactDOM, vm, assign, propTypesFromSchema
+  React, $tracker, EventEmitter, ReactDOM, vm, propTypesFromSchema
 ) {
   return function( name, spec ) {
     var Component = function() {};
@@ -38,12 +38,19 @@ function(
       },
 
       getInitialState() {
-        this._props = propsSchema && propsSchema.cast() || {};
-        assign( this._props, this.props );
-        this._context = contextSchema && contextSchema.cast( this.context );
-
         this._autoRender = $tracker.autorun();
         this._autoAction = $tracker.autorun();
+
+        this._props = propsSchema && propsSchema.cast() || {};
+        this._autoProps = $tracker.autorun( () => {
+          for ( let key in this.props ) {
+            $tracker.attach( () => {
+              this._props[ key ] = this.props[ key ];
+            });
+          }
+        });
+
+        this._context = contextSchema && contextSchema.cast( this.context );
 
         if ( stateSchema ) {
           this._state = stateSchema.cast();
@@ -62,7 +69,11 @@ function(
       },
 
       componentWillReceiveProps( nextProps ) {
-        assign( this._props, nextProps );
+        for ( let key in nextProps ) {
+          if ( nextProps[ key ] !== this.props[ key ] ) {
+            this._props[ key ] = nextProps[ key ];
+          }
+        }
       },
 
       componentDidMount() {
@@ -87,6 +98,7 @@ function(
         }
         this._autoRender.dispose();
         this._autoAction.dispose();
+        this._autoProps.dispose();
       },
 
       render() {
