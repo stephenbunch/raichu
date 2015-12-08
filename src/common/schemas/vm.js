@@ -1,6 +1,6 @@
 export default [
-  'celebi', 'schemas/list', '$tracker', 'formatObject', 'isEqual',
-function( Celebi, list, $tracker, formatObject, isEqual ) {
+  'celebi', 'schemas/list', '$tracker', 'formatObject',
+function( Celebi, list, $tracker, formatObject ) {
   return function vm( schema ) {
     if ( Celebi.isSchema( schema ) ) {
       if ( schema.attributes.type !== 'shape' ) {
@@ -33,7 +33,7 @@ function( Celebi, list, $tracker, formatObject, isEqual ) {
           let _value;
           let set = ( value, isFirstRun ) => {
             value = this.attributes.keys[ key ].cast( value );
-            if ( !isEqual( value, _value ) ) {
+            if ( value !== _value ) {
               _value = value;
               if ( !isFirstRun ) {
                 $tracker.changed( model, key );
