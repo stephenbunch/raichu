@@ -9,6 +9,7 @@ export default [ 'WebBundle', function( WebBundle ) {
   });
 
   common.registerModules( require( '../common/**/*', { mode: 'hash' } ) );
+  common.delegate( '@event', bundle );
   common.register( 'celebi', require( 'celebi' ) );
   common.delegate( 'immutable', bundle );
   common.register( 'lodash.assign', require( 'lodash.assign' ) );

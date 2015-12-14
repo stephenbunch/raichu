@@ -7,6 +7,7 @@ export default [ 'NodeBundle', function( NodeBundle ) {
   });
 
   common.registerDirectory( `${ __dirname }/../common` );
+  common.delegate( '@event', bundle );
   common.register( 'celebi', require( 'celebi' ) );
   common.register( 'immutable', require( 'immutable' ) );
   common.register( 'lodash.assign', require( 'lodash.assign' ) );

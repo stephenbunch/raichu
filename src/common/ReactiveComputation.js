@@ -1,4 +1,4 @@
-export default [ 'immutable', function( Immutable ) {
+export default [ 'immutable', '@event', function( Immutable, event ) {
   return class ReactiveComputation {
     constructor( callback ) {
       this._callback = callback || () => {};
@@ -11,6 +11,13 @@ export default [ 'immutable', function( Immutable ) {
 
       this._result = undefined;
       this._init();
+      this._data = new Map();
+    }
+
+    @event onDispose
+
+    get data() {
+      return this._data;
     }
 
     get result() {
@@ -29,6 +36,7 @@ export default [ 'immutable', function( Immutable ) {
       this._deps = null;
       this._children.forEach( x => x.dispose() );
       this._children = null;
+      this._onDispose.raise();
     }
 
     addChild( comp ) {
