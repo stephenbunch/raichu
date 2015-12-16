@@ -49,8 +49,13 @@ function( Immutable, ReactiveComputation ) {
         comp = null;
       }
       if ( comp || this._current ) {
+        let current = this._current;
+        if ( comp ) {
+          this._current = comp;
+        }
         let child = this.autorun( callback );
-        ( comp || this._current ).addChild( child );
+        this._current.addChild( child );
+        this._current = current;
         return child.result;
       } else {
         return callback();

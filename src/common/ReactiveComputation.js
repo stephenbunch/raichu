@@ -6,6 +6,7 @@ function( Immutable, event, VM_DEBUG ) {
   return class ReactiveComputation {
     constructor( callback ) {
       this.__id = ++uid;
+      this._data = new Map();
       this._callback = callback || () => {};
       this._deps = new Immutable.Map();
       this._isFirstRun = false;
@@ -16,7 +17,6 @@ function( Immutable, event, VM_DEBUG ) {
 
       this._result = undefined;
       this._init();
-      this._data = new Map();
     }
 
     @event onDispose
