@@ -1,6 +1,7 @@
 export default [
-  'celebi', 'schemas/list', '$tracker', 'formatObject',
-function( Celebi, list, $tracker, formatObject ) {
+  'celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEBUG',
+function( Celebi, list, $tracker, formatObject, VM_DEBUG ) {
+  var uid = 0;
   return function vm( schema ) {
     if ( Celebi.isSchema( schema ) ) {
       if ( schema.attributes.type !== 'shape' ) {
@@ -28,7 +29,9 @@ function( Celebi, list, $tracker, formatObject ) {
         if ( source === null || typeof source !== 'object' ) {
           source = {};
         }
-        var model = {};
+        var model = VM_DEBUG ? {
+          __id: ++uid
+        } : {};
         for ( let key in this.attributes.keys ) {
           let _value;
           let set = ( value, isFirstRun ) => {
@@ -36,6 +39,9 @@ function( Celebi, list, $tracker, formatObject ) {
             if ( value !== _value ) {
               _value = value;
               if ( !isFirstRun ) {
+                if ( VM_DEBUG ) {
+                  console.log( 'change', 'model', model.__id, key );
+                }
                 $tracker.changed( model, key );
               }
             }
@@ -44,6 +50,13 @@ function( Celebi, list, $tracker, formatObject ) {
             enumerable: true,
             configurable: true,
             get: () => {
+              if ( VM_DEBUG ) {
+                if ( $tracker.currentComputation ) {
+                  console.log( 'comp', $tracker.currentComputation.__id, 'depend', 'model', model.__id, key );
+                } else {
+                  console.log( 'read', 'model', model.__id, key );
+                }
+              }
               $tracker.depend( model, key );
               return _value;
             },

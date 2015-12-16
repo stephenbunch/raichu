@@ -15,6 +15,7 @@ export default [ 'NodeBundle', function( NodeBundle ) {
   common.register( 'path-to-regexp', require( 'path-to-regexp' ) );
   common.register( 'react', require( 'react' ) );
   common.register( 'urijs', require( 'urijs' ) );
+  common.delegate( 'VM_DEBUG', bundle );
   bundle.registerLink( 'common/', common );
 
   bundle.register( '@bind', require( '@stephenbunch/bind' ) );
@@ -46,6 +47,7 @@ export default [ 'NodeBundle', function( NodeBundle ) {
   bundle.register( 'WebSocketServer', require( 'ws' ).Server );
   bundle.register( 'zlib', require( 'zlib' ) );
   bundle.register( 'zxcvbn', require( 'zxcvbn' ) );
+  bundle.register( 'VM_DEBUG', false );
 
   return bundle;
 }];

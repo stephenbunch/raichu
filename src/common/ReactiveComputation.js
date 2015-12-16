@@ -1,6 +1,11 @@
-export default [ 'immutable', '@event', function( Immutable, event ) {
+export default [
+  'immutable', '@event', 'VM_DEBUG',
+function( Immutable, event, VM_DEBUG ) {
+  var uid = 0;
+
   return class ReactiveComputation {
     constructor( callback ) {
+      this.__id = ++uid;
       this._callback = callback || () => {};
       this._deps = new Immutable.Map();
       this._isFirstRun = false;
@@ -37,6 +42,9 @@ export default [ 'immutable', '@event', function( Immutable, event ) {
       this._children.forEach( x => x.dispose() );
       this._children = null;
       this._onDispose.raise();
+      if ( VM_DEBUG ) {
+        console.log( 'dispose', 'comp', this.__id );
+      }
     }
 
     addChild( comp ) {

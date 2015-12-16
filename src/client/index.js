@@ -17,6 +17,7 @@ export default [ 'WebBundle', function( WebBundle ) {
   common.register( 'path-to-regexp', require( 'path-to-regexp' ) );
   common.delegate( 'react', bundle );
   common.register( 'urijs', require( 'urijs' ) );
+  common.delegate( 'VM_DEBUG', bundle );
   bundle.registerLink( 'common/', common );
 
   bundle.register( '@bind', require( '@stephenbunch/bind' ) );
@@ -29,6 +30,7 @@ export default [ 'WebBundle', function( WebBundle ) {
   bundle.register( 'setTimeout', window.setTimeout );
   bundle.register( 'urijs', require( 'urijs' ) );
   bundle.register( 'window', window );
+  bundle.register( 'VM_DEBUG', false );
 
   return bundle;
 }];
