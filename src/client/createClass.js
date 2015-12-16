@@ -69,11 +69,13 @@ function(
       },
 
       componentWillReceiveProps( nextProps ) {
-        for ( let key in nextProps ) {
-          if ( nextProps[ key ] !== this.props[ key ] ) {
-            this._props[ key ] = nextProps[ key ];
+        this._autoProps.replace( () => {
+          for ( let key in nextProps ) {
+            $tracker.attach( () => {
+              this._props[ key ] = nextProps[ key ];
+            });
           }
-        }
+        });
       },
 
       componentDidMount() {
