@@ -35,6 +35,10 @@ function( HttpClient, JsonRequestTransform, JsonResponseTransform, Immutable ) {
       }
     }
 
+    setProfiles( profiles ) {
+      this._profiles = this._profilesFromData( profiles );
+    }
+
     logout() {
       var profiles = this._profiles;
       this._profiles = this._profiles.clear();

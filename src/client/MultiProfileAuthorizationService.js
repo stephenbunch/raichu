@@ -73,6 +73,12 @@ function(
       return this._authorization.tokenAsync();
     }
 
+    setProfiles( profiles ) {
+      this._authentication.setProfiles( profiles );
+      this._update();
+      this._didLogin.raise();
+    }
+
     async loginAsync( credentials ) {
       await this._authentication.loginAsync( credentials );
       this._update();

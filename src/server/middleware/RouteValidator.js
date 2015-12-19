@@ -9,10 +9,10 @@ export default [ 'celebi', function( Celebi ) {
             let schema = Celebi.parse( validate[ prop ] );
             let result = schema.validate( request[ prop ] );
             if ( result.error ) {
-              if ( result.error.details ) {
+              if ( Array.isArray( result.error.details ) ) {
                 errors = errors.concat( result.error.details );
               } else {
-                errors = [ ...errors, result.error.message ];
+                errors = [ ...errors, { message: result.error.message } ];
               }
             } else {
               request[ prop ] = result.value;
