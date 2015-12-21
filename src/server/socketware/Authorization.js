@@ -1,17 +1,16 @@
 export default [
-  'JsonWebTokenHandler', 'urijs', 'moment', 'lodash.isequal', 'common/formatError',
-  'clearTimeout', 'setTimeout',
+  'urijs', 'moment', 'lodash.isequal', 'common/formatError', 'clearTimeout',
+  'setTimeout',
 function(
-  JsonWebTokenHandler, URI, moment, isEqual, formatError, clearTimeout,
-  setTimeout
+  URI, moment, isEqual, formatError, clearTimeout, setTimeout
 ) {
   return class Authorization {
-    constructor( secret ) {
-      this._tokenHandler = new JsonWebTokenHandler( secret );
+    constructor( tokenParser ) {
+      this._tokenParser = tokenParser;
     }
 
     async invokeAsync( socket, next ) {
-      socket.claims = this._parseClaims( socket );
+      socket.claims = await this._parseClaimsAsync( socket );
       if ( !socket.claims ) {
         socket.close();
         return;
@@ -28,7 +27,7 @@ function(
         try {
           clearTimeout( expireTimeout );
           let current = socket.claims;
-          socket.claims = this._parseClaims( socket, token );
+          socket.claims = await this._parseClaimsAsync( socket, token );
           if ( !socket.claims ) {
             socket.close();
           } else {
@@ -51,12 +50,12 @@ function(
       expireTimeout = this._setExpireTimeout( socket );
     }
 
-    _parseClaims( socket ) {
+    async _parseClaimsAsync( socket ) {
       var query = URI.parseQuery( new URI( socket.url ).query() );
-      var claims = null;
+      var claims;
       if ( query.token ) {
         try {
-          claims = this._tokenHandler.decodeAndVerify( query.token );
+          claims = await this._tokenParser.parseAsync( query.token );
         } catch ( err ) {}
       }
       return claims;

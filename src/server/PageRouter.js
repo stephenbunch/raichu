@@ -17,9 +17,9 @@ export default [ 'react', function( React ) {
         claims = null;
       }
       if ( !claims ) {
-        claims = this._delegate.parseClaims( request );
+        claims = await this._delegate.parseClaimsAsync( request );
       }
-      let routes = this._delegate.routesForUser({
+      let routes = await this._delegate.routesForUserAsync({
         isLoggedIn: !!claims,
         claims
       });

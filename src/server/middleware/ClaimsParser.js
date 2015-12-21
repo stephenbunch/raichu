@@ -1,25 +1,23 @@
-export default [
-  'JsonWebTokenHandler', 'HttpError',
-function( JsonWebTokenHandler, HttpError ) {
+export default [ 'HttpError', function( HttpError ) {
   return class ClaimsParser {
     /**
-     * @param {String} secret
+     * @param {TokenParser} tokenParser
      */
-    constructor( secret ) {
-      this._tokenHandler = new JsonWebTokenHandler( secret );
+    constructor( tokenParser ) {
+      this._tokenParser = tokenParser;
     }
 
     /**
      * @param {HttpRequest} request
      * @param {HttpRequestMiddleware} next
      */
-    invokeAsync( request, next ) {
+    async invokeAsync( request, next ) {
       request.claims = {};
       var auth = request.headers.authorization || request.query.token;
       if ( auth ) {
         let token = auth.replace( /^bearer /i, ''  );
         try {
-          request.claims = this._tokenHandler.decodeAndVerify( token );
+          request.claims = await this._tokenParser.parseAsync( token );
         } catch ( err ) {
           if ( err.name === 'TokenExpiredError' ) {
             throw new HttpError( 401, 'token expired' );
