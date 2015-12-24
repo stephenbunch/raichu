@@ -2,9 +2,9 @@ export default [
   'ValidationError', 'zxcvbn', 'bcrypt',
 function( ValidationError, zxcvbn, bcrypt ) {
   return class PasswordAuthentication {
-    hashAsync( passphrase, email ) {
-      var result = zxcvbn( passphrase, [ email ] );
-      if ( result.score === 0 ) {
+    hashAsync( passphrase, minimumScore = 0, userInputs = [] ) {
+      var result = zxcvbn( passphrase, userInputs );
+      if ( result.score < minimumScore ) {
         throw new ValidationError( 'Password is too weak.' );
       }
       return new Promise( ( resolve, reject ) => {
