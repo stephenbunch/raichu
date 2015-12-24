@@ -101,12 +101,13 @@ function( Immutable, ReactiveComputation ) {
       return comp => {
         var current = this._current;
         this._current = comp;
-        callback.call( undefined, comp );
+        var result = callback.call( undefined, comp );
         if ( current && !current.isDisposed ) {
           this._current = current;
         } else {
           this._current = null;
         }
+        return result;
       };
     }
   };
