@@ -16,6 +16,7 @@ function(
       displayName: name,
 
       statics: {
+        ...spec.statics,
         setBinding( bindingClass ) {
           this._bindingClass = bindingClass;
         }

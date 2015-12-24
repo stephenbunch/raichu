@@ -12,6 +12,8 @@ function( React, $tracker, vm, propTypesFromSchema ) {
     return React.createClass({
       displayName: name,
 
+      statics: spec.statics,
+
       childContextTypes: {
         ...propTypesFromSchema( spec.childContextTypes || {} ),
         _state: React.PropTypes.object.isRequired
