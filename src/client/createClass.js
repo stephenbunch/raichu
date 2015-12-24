@@ -66,6 +66,10 @@ function(
           }
         }
 
+        this._eventQueue = [];
+        this._updatesSuspended = 0;
+        this._needsUpdate = false;
+
         return null;
       },
 
@@ -89,8 +93,14 @@ function(
             getElement: () => ReactDOM.findDOMNode( this ),
             props: this._props,
             getRefs: () => this.refs,
-            context: this._context
+            context: this._context,
+            suspendUpdates: this._suspendUpdates,
+            resumeUpdates: this._resumeUpdates
           });
+          for ( let args of this._eventQueue ) {
+            this._events.emit.apply( this._events, args );
+          }
+          this._eventQueue = [];
         }
       },
 
@@ -116,7 +126,11 @@ function(
             element = component.render();
           } else {
             $tracker.nonreactive( () => {
-              this.forceUpdate();
+              if ( this._updatesSuspended > 0 ) {
+                this._needsUpdate = true;
+              } else {
+                this.forceUpdate();
+              }
             });
           }
         });
@@ -124,7 +138,29 @@ function(
       },
 
       _dispatch( event, ...args ) {
-        this._events.emit( event, args );
+        if ( !this._events ) {
+          this._eventQueue.push([ event, args ]);
+        } else {
+          this._events.emit( event, args );
+        }
+      },
+
+      _suspendUpdates() {
+        this._suspendUpdates += 1;
+      },
+
+      _resumeUpdates() {
+        this._suspendUpdates -= 1;
+        if ( this._suspendUpdates < 0 ) {
+          this._suspendUpdates = 0;
+        } else if ( this._suspendUpdates === 0 ) {
+          if ( this._needsUpdate ) {
+            this._needsUpdate = false;
+            $tracker.nonreactive( () => {
+              this.forceUpdate();
+            });
+          }
+        }
       }
     });
   };
