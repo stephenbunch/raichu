@@ -15,8 +15,8 @@ function( accepts, zlib, compressible ) {
               var state = await result.writeHeadAsync( response );
               var length = Number( response.getHeader( 'Content-Length' ) );
               if (
-                isNaN( length ) ||
-                length >= 1024 && compressible( response.getHeader( 'Content-Type' ) )
+                length >= 1024 &&
+                compressible( response.getHeader( 'Content-Type' ) )
               ) {
                 response.setHeader( 'Content-Encoding', 'gzip' );
                 response.setHeader( 'Transfer-Encoding', 'chunked' );
