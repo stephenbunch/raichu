@@ -51,7 +51,14 @@ function(
           }
         });
 
-        this._context = contextSchema && contextSchema.cast( this.context );
+        this._context = contextSchema && contextSchema.cast() || {};
+        this._autoContext = $tracker.autorun( () => {
+          for ( let key in this.context ) {
+            $tracker.attach( () => {
+              this._context[ key ] = this.context[ key ];
+            });
+          }
+        });
 
         if ( stateSchema ) {
           this._state = stateSchema.cast();
@@ -73,11 +80,18 @@ function(
         return null;
       },
 
-      componentWillReceiveProps( nextProps ) {
+      componentWillReceiveProps( nextProps, nextContext ) {
         this._autoProps.replace( () => {
           for ( let key in nextProps ) {
             $tracker.attach( () => {
               this._props[ key ] = nextProps[ key ];
+            });
+          }
+        });
+        this._autoContext.replace( () => {
+          for ( let key in nextContext ) {
+            $tracker.attach( () => {
+              this._context[ key ] = nextContext[ key ];
             });
           }
         });
@@ -112,6 +126,7 @@ function(
         this._autoRender.dispose();
         this._autoAction.dispose();
         this._autoProps.dispose();
+        this._autoContext.dispose();
       },
 
       render() {
