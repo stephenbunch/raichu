@@ -65,8 +65,9 @@ function( Immutable, ReactiveComputation ) {
     nonreactive( callback ) {
       var current = this._current;
       this._current = null;
-      callback();
+      var result = callback();
       this._current = current;
+      return result;
     }
 
     /**
