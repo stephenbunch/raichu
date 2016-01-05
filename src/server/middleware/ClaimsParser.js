@@ -13,7 +13,7 @@ export default [ 'HttpError', function( HttpError ) {
      */
     async invokeAsync( request, next ) {
       request.claims = {};
-      var auth = request.headers.authorization || request.query.token;
+      var auth = request.headers.authorization;
       if ( auth ) {
         let token = auth.replace( /^bearer /i, ''  );
         try {
