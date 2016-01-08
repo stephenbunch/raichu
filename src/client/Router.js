@@ -50,7 +50,11 @@ function( Immutable, event, ReactiveValue ) {
           throw new Error( `No routes exist for ${ path }` );
         }
         this._is404ing = true;
-        this._did404.raise();
+        this._did404.raise({
+          resolve: () => {
+            this._state.set({ url, path, route, params, query });
+          }
+        });
         this._is404ing = false;
       }
     }
