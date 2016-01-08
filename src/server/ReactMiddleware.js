@@ -58,6 +58,10 @@ export default [ 'react', 'common/$tracker', function( React, $tracker ) {
             };
           },
 
+          getDefaultProps() {
+            return element.props;
+          },
+
           render() {
             return element;
           }
