@@ -130,7 +130,7 @@ function(
       },
 
       render() {
-        var element;
+        var result;
         this._autoRender.replace( comp => {
           if ( comp.isFirstRun ) {
             let component = new Component();
@@ -138,7 +138,7 @@ function(
             component.props = this._props;
             component.context = this._context;
             component.dispatch = this._dispatch;
-            element = component.render();
+            result = component.render();
           } else {
             $tracker.nonreactive( () => {
               if ( this._updatesSuspended > 0 ) {
@@ -149,7 +149,7 @@ function(
             });
           }
         });
-        return element;
+        return result;
       },
 
       _dispatch( event, ...args ) {

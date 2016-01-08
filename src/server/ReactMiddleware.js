@@ -43,7 +43,6 @@ export default [ 'react', 'common/$tracker', function( React, $tracker ) {
     }
 
     _createElement( element, context ) {
-      var self = this;
       return React.createElement(
         React.createClass({
           childContextTypes: {
