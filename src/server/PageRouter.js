@@ -28,7 +28,7 @@ export default [ 'react', function( React ) {
         if ( match ) {
           request.params = match;
           request.claims = claims;
-          return this._delegate.createElementAsync( route.meta.component );
+          return this._delegate.createElementAsync( route, request );
         }
       }
       return next.invokeAsync( request );

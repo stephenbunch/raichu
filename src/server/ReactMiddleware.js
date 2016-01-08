@@ -60,10 +60,7 @@ export default [ 'react', 'common/$tracker', function( React, $tracker ) {
           },
 
           render() {
-            return self._delegate.createElement({
-              children: element,
-              request: context.request
-            });
+            return element;
           }
         })
       );
