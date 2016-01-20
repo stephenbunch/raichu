@@ -1,7 +1,9 @@
 export default [
   'SocketChannel', '@event', '@bind', 'moment', 'WebSocket', 'urijs',
-  'lodash.assign',
-function( SocketChannel, event, bind, moment, WebSocket, URI, assign ) {
+  'lodash.assign', 'common/log', 'common/formatError',
+function(
+  SocketChannel, event, bind, moment, WebSocket, URI, assign, log, formatError
+) {
 
   return class Socket {
     /**
@@ -90,7 +92,7 @@ function( SocketChannel, event, bind, moment, WebSocket, URI, assign ) {
                 this._waiting = false;
                 this._connect( token );
               }, function( error ) {
-                console.log( error.stack );
+                log( error.stack );
                 this._retry();
               });
             }
@@ -104,7 +106,7 @@ function( SocketChannel, event, bind, moment, WebSocket, URI, assign ) {
               try {
                 this._ws.send( task.data );
               } catch ( err ) {
-                console.log( err.stack );
+                log( formatError( err ) );
                 this._queue.unshift( task );
                 this._queue.unshift({ command: 'open' });
               }
@@ -180,8 +182,8 @@ function( SocketChannel, event, bind, moment, WebSocket, URI, assign ) {
       setTimeout( () => {
         this._auth.tokenAsync().then(
           token => this._connect( token ),
-          error => {
-            console.log( error.stack );
+          err => {
+            log( formatError( err ) );
             this._retry();
           }
         );

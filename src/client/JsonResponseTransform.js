@@ -1,4 +1,4 @@
-export default [ 'HttpError', function( HttpError ) {
+export default [ 'HttpError', 'common/log', function( HttpError, log ) {
   return class JsonResponseTransform {
     async transformResponseAsync( response ) {
       var contentType = response.headers.get( 'Content-Type' ) || '';
@@ -8,7 +8,7 @@ export default [ 'HttpError', function( HttpError ) {
         try {
           body = JSON.parse( text );
         } catch ( err ) {
-          console.log( text );
+          log( text );
           throw err;
         }
         if ( response.ok ) {

@@ -1,6 +1,9 @@
 export default [
   'HttpClient', 'JsonRequestTransform', 'JsonResponseTransform', 'immutable',
-function( HttpClient, JsonRequestTransform, JsonResponseTransform, Immutable ) {
+  'common/log',
+function(
+  HttpClient, JsonRequestTransform, JsonResponseTransform, Immutable, log
+) {
   return class MultiProfileAuthenticationClient {
     /**
      * @param {Object} params
@@ -49,7 +52,7 @@ function( HttpClient, JsonRequestTransform, JsonResponseTransform, Immutable ) {
           body: {
             token: profile.refresh_token
           }
-        }).catch( err => console.log( `${ err.name }: ${ err.message }` ) );
+        }).catch( err => log( `${ err.name }: ${ err.message }` ) );
       }
     }
 

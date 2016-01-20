@@ -1,4 +1,6 @@
-export default [ '@event', '@bind', function( event, bind ) {
+export default [
+  '@event', '@bind', 'common/log', 'common/formatError',
+function( event, bind, log, formatError ) {
   return class SocketChannel {
     /**
      * @param {socket/Socket} socket
@@ -113,7 +115,7 @@ export default [ '@event', '@bind', function( event, bind ) {
       try {
         message = JSON.parse( message );
       } catch ( err ) {
-        console.error( err.stack );
+        log( formatError( err ) );
         return;
       }
       var handlers = this._handlers[ message.type ];
@@ -122,7 +124,7 @@ export default [ '@event', '@bind', function( event, bind ) {
           try {
             handler( message.body );
           } catch ( err ) {
-            console.error( err.stack );
+            log( formatError( err ) );
           }
         });
       }

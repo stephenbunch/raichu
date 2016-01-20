@@ -1,6 +1,6 @@
 export default [
-  'immutable', '@event', 'VM_DEBUG',
-function( Immutable, event, VM_DEBUG ) {
+  'immutable', '@event', 'VM_DEBUG', 'log',
+function( Immutable, event, VM_DEBUG, log ) {
   var uid = 0;
 
   return class ReactiveComputation {
@@ -43,7 +43,7 @@ function( Immutable, event, VM_DEBUG ) {
       this._children = null;
       this._onDispose.raise();
       if ( VM_DEBUG ) {
-        console.log( 'dispose', 'comp', this.__id );
+        log( 'dispose', 'comp', this.__id );
       }
     }
 

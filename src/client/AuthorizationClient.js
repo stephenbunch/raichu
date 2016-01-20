@@ -1,9 +1,9 @@
 export default [
   '@event', 'HttpClient', 'JsonRequestTransform', 'JsonResponseTransform',
-  'AccessToken', 'RefreshToken', 'moment', 'common/formatError',
+  'AccessToken', 'RefreshToken', 'moment', 'common/formatError', 'common/log',
 function(
   event, HttpClient, JsonRequestTransform, JsonResponseTransform, AccessToken,
-  RefreshToken, moment, formatError
+  RefreshToken, moment, formatError, log
 ) {
   return class AuthorizationClient {
     /**
@@ -110,7 +110,7 @@ function(
             if ( err.statusCode === 403 ) {
               this.unauthorize();
             } else {
-              console.log( formatError( err ) );
+              log( formatError( err ) );
             }
           }
         }
