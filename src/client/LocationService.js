@@ -72,10 +72,14 @@ function(
 
     @bind _window_onClick( e ) {
       var element = e.target;
-      while ( element && element.nodeName.toLowerCase() !== 'a' ) {
+      while (
+        element &&
+        element.nodeName &&
+        element.nodeName.toLowerCase() !== 'a'
+      ) {
         element = element.parentNode;
       }
-      if ( element ) {
+      if ( element && element.nodeName ) {
         let href = element.href;
         let uri = new URI( href );
         if (
