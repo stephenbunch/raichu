@@ -54,7 +54,11 @@ function( Immutable, ReactiveComputation ) {
           this._current = comp;
         }
         let child = this.autorun( callback );
-        this._current.addChild( child );
+        // It's possible for a computation to dispose itself. If that happens,
+        // this._current will be null.
+        if ( this._current !== null ) {
+          this._current.addChild( child );
+        }
         this._current = current;
         return child.result;
       } else {
