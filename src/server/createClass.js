@@ -34,7 +34,8 @@ function( React, $tracker, vm, propTypesFromSchema ) {
               uid: 0,
               init: false,
               pending: false,
-              error: null
+              error: null,
+              result: null
             });
           } else {
             this.context._state.store.get( this._storeId ).uid = 0;
@@ -86,21 +87,28 @@ function( React, $tracker, vm, propTypesFromSchema ) {
           }
 
           if ( component.initialAction ) {
-            store.pending = true;
             component.state = store.state;
-            Promise.resolve().then( () => component.initialAction() ).then( () => {
-              store.pending = false;
-              $tracker.changed( store );
-            }, err => {
+            try {
+              let result = component.initialAction();
+              if ( result && typeof result.then === 'function' ) {
+                store.pending = true;
+                result.then( () => {
+                  store.pending = false;
+                  $tracker.changed( store, 'pending' );
+                }, err => {
+                  store.error = err;
+                  store.pending = false;
+                  $tracker.changed( store, 'pending' );
+                });
+              }
+            } catch ( err ) {
               store.error = err;
-              store.pending = false;
-              $tracker.changed( store );
-            });
+            }
           }
         }
 
         if ( store.pending ) {
-          $tracker.depend( store );
+          $tracker.depend( store, 'pending' );
           $tracker.flagPending();
           return null;
         }
@@ -110,7 +118,11 @@ function( React, $tracker, vm, propTypesFromSchema ) {
         }
 
         component.state = store.state;
-        return component.render();
+
+        if ( !store.result ) {
+          store.result = component.render();
+        }
+        return store.result;
       }
     });
   };

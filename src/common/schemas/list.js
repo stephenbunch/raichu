@@ -1,6 +1,10 @@
 export default [ 'celebi', 'immutable', function( Celebi, Immutable ) {
   return function list( array ) {
     return array.extend({
+      attributes: {
+        type: 'list'
+      },
+
       cast( value, options ) {
         if ( Immutable.List.isList( value ) ) {
           value = value.toArray();

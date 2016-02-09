@@ -1,16 +1,16 @@
 export default [
-  'react', 'common/$tracker', 'EventEmitter', 'react-dom', 'common/schemas/vm',
+  'react', 'common/$tracker', 'EventEmitter', 'react-dom', 'common/schemas/rxvm',
   'common/propTypesFromSchema',
 function(
-  React, $tracker, EventEmitter, ReactDOM, vm, propTypesFromSchema
+  React, $tracker, EventEmitter, ReactDOM, rxvm, propTypesFromSchema
 ) {
   return function( name, spec ) {
     var Component = function() {};
     Component.prototype = spec;
 
-    var propsSchema = spec.propTypes && vm( spec.propTypes );
-    var stateSchema = spec.stateTypes && vm( spec.stateTypes );
-    var contextSchema = spec.contextTypes && vm( spec.contextTypes );
+    var propsSchema = spec.propTypes && rxvm( spec.propTypes );
+    var stateSchema = spec.stateTypes && rxvm( spec.stateTypes );
+    var contextSchema = spec.contextTypes && rxvm( spec.contextTypes );
 
     return React.createClass({
       displayName: name,
