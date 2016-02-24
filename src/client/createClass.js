@@ -68,6 +68,7 @@ function(
               component.context = this._context;
               component.props = this._props;
               component.state = this._state;
+              component.dispatch = this._dispatch;
               component.initialAction();
             });
           }
