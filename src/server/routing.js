@@ -26,6 +26,10 @@ function( HttpRoute, HttpChannel ) {
       return new HttpChannel( params );
     },
 
+    all( path, params ) {
+      return route( '*', path, params );
+    },
+
     get( path, params ) {
       return route( 'GET', path, params );
     },

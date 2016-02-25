@@ -31,7 +31,7 @@ function( StatusCode, MiddlewarePipeline, path, HttpRoute ) {
     async invokeAsync( request, next ) {
       var routes = this._routes.slice();
       for ( let route of routes ) {
-        if ( route.method === request.method ) {
+        if ( route.method === '*' || route.method === request.method ) {
           let match = route.pattern.match( request.url );
           if ( match ) {
             request.params = match;
