@@ -14,15 +14,15 @@ export default [ 'HttpError', function( HttpError ) {
     async invokeAsync( request, next ) {
       request.claims = {};
       var auth = request.headers.authorization;
-      if ( auth ) {
-        let token = auth.replace( /^bearer /i, ''  );
+      if ( auth && /^Bearer /.test( auth ) ) {
+        let token = auth.replace( /^Bearer /, '' );
         try {
           request.claims = await this._tokenParser.parseAsync( token );
         } catch ( err ) {
           if ( err.name === 'TokenExpiredError' ) {
             throw new HttpError( 401, 'token expired' );
           }
-          console.log( err );
+          console.log( `Error parsing claims "${ token }": ${ err.message }` );
         }
       }
       return next.invokeAsync( request );
