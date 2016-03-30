@@ -102,6 +102,7 @@ function(
         this._events = new EventEmitter();
         if ( this.constructor._bindingClass ) {
           let Binding = this.constructor._bindingClass;
+          this._updateCallbacks = [];
           this._binding = new Binding({
             state: this._state,
             events: this._events,
@@ -110,7 +111,8 @@ function(
             getRefs: () => this.refs,
             context: this._context,
             suspendUpdates: this._suspendUpdates,
-            resumeUpdates: this._resumeUpdates
+            resumeUpdates: this._resumeUpdates,
+            afterUpdate: callback => this._updateCallbacks.push(callback)
           });
           for ( let args of this._eventQueue ) {
             this._events.emit.apply( this._events, args );
@@ -145,7 +147,7 @@ function(
               if ( this._updatesSuspended > 0 ) {
                 this._needsUpdate = true;
               } else {
-                this.forceUpdate();
+                this.forceUpdate(this._afterUpdate);
               }
             });
           }
@@ -173,8 +175,18 @@ function(
           if ( this._needsUpdate ) {
             this._needsUpdate = false;
             $tracker.nonreactive( () => {
-              this.forceUpdate();
+              this.forceUpdate(this._afterUpdate);
             });
+          }
+        }
+      },
+
+      _afterUpdate() {
+        if (this._updateCallbacks) {
+          let callbacks = this._updateCallbacks;
+          this._updateCallbacks = [];
+          for (let callback of callbacks) {
+            callback();
           }
         }
       }
