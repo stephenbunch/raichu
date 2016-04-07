@@ -1,7 +1,10 @@
 export default [ 'lodash.isplainobject', function( isPlainObject ) {
   return class JsonRequestTransform {
     transformRequest( request ) {
-      if ( request.body !== undefined ) {
+      if (
+        request.body !== undefined &&
+        !( request.body instanceof File )
+      ) {
         request.body = JSON.stringify( request.body );
         request.headers[ 'Content-Type' ] = 'application/json';
       }
