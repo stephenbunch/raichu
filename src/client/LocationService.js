@@ -84,7 +84,8 @@ function(
         let uri = new URI( href );
         if (
           uri.host() === window.location.host &&
-          uri.protocol() + ':' === window.location.protocol
+          uri.protocol() + ':' === window.location.protocol &&
+          !element.hasAttribute( 'data-external' )
         ) {
           e.preventDefault();
           this.go( element.getAttribute( 'href' ) );
