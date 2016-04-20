@@ -1,6 +1,6 @@
 {
   "name": "raichu",
-  "version": "0.5.8",
+  "version": "0.6.0",
   "description": "",
   "main": "dist/server",
   "scripts": {
@@ -37,7 +37,7 @@
     "zxcvbn": "^4.1.1"
   },
   "devDependencies": {
-    "arceus": "^0.3.4",
+    "arceus": "^0.4.2",
     "gulp": "^3.9.0"
   }
 }

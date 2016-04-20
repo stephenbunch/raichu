@@ -1,8 +1,16 @@
 import 'browsernizr/test/history';
 
-export default [ 'WebBundle', function( WebBundle ) {
-  var bundle = new WebBundle( 'raichu/client' );
-  var common = new WebBundle( 'raichu/common' );
+export default [ 'WebBundle', 'upstream', function( WebBundle, upstream ) {
+  const bundle = new WebBundle( 'raichu/client' );
+  const common = new WebBundle( 'raichu/common' );
+
+  bundle.delegate( 'atob', upstream );
+  bundle.delegate( 'fetch', upstream );
+  bundle.delegate( 'immutable', upstream );
+  bundle.delegate( 'moment', upstream );
+  bundle.delegate( 'react', upstream );
+  bundle.delegate( 'react-dom', upstream );
+  bundle.delegate( 'WebSocket', upstream );
 
   bundle.registerModules( require( './**/*', { mode: 'hash' } ), {
     ignore: [ 'index' ]
