@@ -78,6 +78,7 @@ function( React, $tracker, vm, propTypesFromSchema ) {
         var component = new Component();
         component.context = this._context;
         component.props = this._props;
+        component.dispatch = () => {};
 
         if ( !store.init ) {
           store.init = true;
