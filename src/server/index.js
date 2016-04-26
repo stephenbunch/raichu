@@ -1,4 +1,4 @@
-export default [ 'NodeBundle', function( NodeBundle ) {
+export default [ 'NodeBundle', 'upstream', function( NodeBundle, upstream ) {
   var bundle = new NodeBundle( 'raichu/server' );
   var common = new NodeBundle( 'raichu/common' );
 
@@ -13,7 +13,7 @@ export default [ 'NodeBundle', function( NodeBundle ) {
   common.register( 'lodash.assign', require( 'lodash.assign' ) );
   common.register( 'lodash.find', require( 'lodash.find' ) );
   common.register( 'path-to-regexp', require( 'path-to-regexp' ) );
-  common.register( 'react', require( 'react' ) );
+  common.delegate( 'react', upstream );
   common.register( 'urijs', require( 'urijs' ) );
   common.delegate( 'VM_DEBUG', bundle );
   bundle.registerLink( 'common/', common );
@@ -39,7 +39,7 @@ export default [ 'NodeBundle', function( NodeBundle ) {
   bundle.register( 'path', require( 'path' ) );
   bundle.register( 'path-to-regexp', require( 'path-to-regexp' ) );
   bundle.register( 'raw-body', require( 'raw-body' ) );
-  bundle.register( 'react', require( 'react' ) );
+  bundle.delegate( 'react', upstream );
   bundle.register( 'setTimeout', setTimeout );
   bundle.register( 'type-is', require( 'type-is' ) );
   bundle.register( 'urijs', require( 'urijs' ) );

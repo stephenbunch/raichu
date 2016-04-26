@@ -1,3 +1,5 @@
+require('babel-polyfill');
+
 var gulp = require( 'gulp' );
 var arceus = require( 'arceus' );
 

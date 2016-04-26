@@ -17,12 +17,12 @@ function( Immutable, ReactiveComputation ) {
      * @returns {Disposable}
      */
     autorun( callback ) {
-      var comp = new ReactiveComputation( this._wrapCallback( callback || () => {} ) );
+      var comp = new ReactiveComputation( this._wrapCallback( callback || (() => {}) ) );
       this._computations = this._computations.add( comp );
 
       var _replace = comp.replace;
       comp.replace = callback => {
-        _replace.call( comp, this._wrapCallback( callback || () => {} ) );
+        _replace.call( comp, this._wrapCallback( callback || (() => {}) ) );
       };
 
       var _dispose = comp.dispose;

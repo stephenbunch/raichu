@@ -7,7 +7,7 @@ function( Immutable, event, VM_DEBUG, log ) {
     constructor( callback ) {
       this.__id = ++uid;
       this._data = new Map();
-      this._callback = callback || () => {};
+      this._callback = callback || (() => {});
       this._deps = new Immutable.Map();
       this._isFirstRun = false;
       this._isRunning = false;
@@ -62,7 +62,7 @@ function( Immutable, event, VM_DEBUG, log ) {
       if ( this.isDisposed ) {
         throw new Error( 'Computation has been disposed.' );
       }
-      this._callback = callback || () => {};
+      this._callback = callback || (() => {});
       this._init();
     }
 
