@@ -14950,34 +14950,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function _extendableBuiltin(cls) {
-  function ExtendableBuiltin() {
-    var instance = Reflect.construct(cls, Array.from(arguments));
-    Object.setPrototypeOf(instance, Object.getPrototypeOf(this));
-    return instance;
-  }
-
-  ExtendableBuiltin.prototype = Object.create(cls.prototype, {
-    constructor: {
-      value: cls,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-
-  if (Object.setPrototypeOf) {
-    Object.setPrototypeOf(ExtendableBuiltin, cls);
-  } else {
-    ExtendableBuiltin.__proto__ = cls;
-  }
-
-  return ExtendableBuiltin;
-}
-
 exports.default = [function () {
-  return function (_extendableBuiltin2) {
-    _inherits(HttpError, _extendableBuiltin2);
+  return function (_Error) {
+    _inherits(HttpError, _Error);
 
     function HttpError(_ref) {
       var status = _ref.status;
@@ -14997,7 +14972,7 @@ exports.default = [function () {
     }
 
     return HttpError;
-  }(_extendableBuiltin(Error));
+  }(Error);
 }];
 
 },{}],70:[function(require,module,exports){
@@ -18372,4 +18347,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?151cf1ced0b3e49d9461984dca24d8b3560fe61c
+//# sourceMappingURL=raichu.js.map?1041ef2bf2e1ca2ee2fed732f3fbecc2f3d6f391
