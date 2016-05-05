@@ -16618,7 +16618,7 @@ Object.defineProperty(exports, "__esModule", {
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'common/schemas/rxvm', 'common/propTypesFromSchema', function (React, $tracker, EventEmitter, ReactDOM, rxvm, propTypesFromSchema) {
-  return function (name, spec) {
+  return function (spec) {
     var Component = function Component() {};
     Component.prototype = spec;
 
@@ -16627,7 +16627,7 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
     var contextSchema = spec.contextTypes && rxvm(spec.contextTypes);
 
     return React.createClass({
-      displayName: name,
+      displayName: spec.displayName,
 
       statics: _extends({}, spec.statics, {
         setBinding: function setBinding(bindingClass) {
@@ -18347,4 +18347,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?1041ef2bf2e1ca2ee2fed732f3fbecc2f3d6f391
+//# sourceMappingURL=raichu.js.map?71a89c27404b5973d994fd8c9617aa002248c3c1

@@ -1,7 +1,7 @@
 export default [
   'react', 'common/$tracker', 'common/schemas/vm', 'common/propTypesFromSchema',
 function( React, $tracker, vm, propTypesFromSchema ) {
-  return function( name, spec ) {
+  return function( spec ) {
     var Component = function() {};
     Component.prototype = spec;
 
@@ -10,7 +10,7 @@ function( React, $tracker, vm, propTypesFromSchema ) {
     var contextSchema = spec.contextTypes && vm( spec.contextTypes );
 
     return React.createClass({
-      displayName: name,
+      displayName: spec.displayName,
 
       statics: spec.statics,
 

@@ -4,7 +4,7 @@ export default [
 function(
   React, $tracker, EventEmitter, ReactDOM, rxvm, propTypesFromSchema
 ) {
-  return function( name, spec ) {
+  return function( spec ) {
     var Component = function() {};
     Component.prototype = spec;
 
@@ -13,7 +13,7 @@ function(
     var contextSchema = spec.contextTypes && rxvm( spec.contextTypes );
 
     return React.createClass({
-      displayName: name,
+      displayName: spec.displayName,
 
       statics: {
         ...spec.statics,
