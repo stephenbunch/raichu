@@ -89,6 +89,8 @@ function( React, $tracker, vm, propTypesFromSchema ) {
 
           if ( component.initialAction ) {
             component.state = store.state;
+            component.suspendUpdates = (() => {});
+            component.resumeUpdates = (() => {});
             try {
               let result = component.initialAction();
               if ( result && typeof result.then === 'function' ) {

@@ -69,6 +69,8 @@ function(
               component.props = this._props;
               component.state = this._state;
               component.dispatch = this._dispatch;
+              component.suspendUpdates = this._suspendUpdates;
+              component.resumeUpdates = this._resumeUpdates;
               component.initialAction();
             });
           }

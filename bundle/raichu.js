@@ -16690,6 +16690,8 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
               component.props = _this._props;
               component.state = _this._state;
               component.dispatch = _this._dispatch;
+              component.suspendUpdates = _this._suspendUpdates;
+              component.resumeUpdates = _this._resumeUpdates;
               component.initialAction();
             });
           }
@@ -18347,4 +18349,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?71a89c27404b5973d994fd8c9617aa002248c3c1
+//# sourceMappingURL=raichu.js.map?7d4a29e77dad15f916e0134c27429925273fe7c4
