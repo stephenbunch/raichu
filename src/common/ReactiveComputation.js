@@ -41,6 +41,9 @@ function( Immutable, event, VM_DEBUG, log ) {
       this._deps = null;
       this._children.forEach( x => x.dispose() );
       this._children = null;
+      if (this.parent) {
+        this.parent._children = this.parent._children.remove(this);
+      }
       this._onDispose.raise();
       if ( VM_DEBUG ) {
         log( 'dispose', 'comp', this.__id );

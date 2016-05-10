@@ -146,7 +146,7 @@ function(
             result = component.render();
           } else {
             $tracker.nonreactive( () => {
-              if ( this._updatesSuspended > 0 ) {
+              if ( this._suspendUpdateCount > 0 ) {
                 this._needsUpdate = true;
               } else {
                 this.forceUpdate(this._afterUpdate);
@@ -166,14 +166,14 @@ function(
       },
 
       _suspendUpdates() {
-        this._suspendUpdates += 1;
+        this._suspendUpdateCount += 1;
       },
 
       _resumeUpdates() {
-        this._suspendUpdates -= 1;
-        if ( this._suspendUpdates < 0 ) {
-          this._suspendUpdates = 0;
-        } else if ( this._suspendUpdates === 0 ) {
+        this._suspendUpdateCount -= 1;
+        if ( this._suspendUpdateCount < 0 ) {
+          this._suspendUpdateCount = 0;
+        } else if ( this._suspendUpdateCount === 0 ) {
           if ( this._needsUpdate ) {
             this._needsUpdate = false;
             $tracker.nonreactive( () => {

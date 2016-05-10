@@ -16805,7 +16805,7 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
             result = component.render();
           } else {
             $tracker.nonreactive(function () {
-              if (_this4._updatesSuspended > 0) {
+              if (_this4._suspendUpdateCount > 0) {
                 _this4._needsUpdate = true;
               } else {
                 _this4.forceUpdate(_this4._afterUpdate);
@@ -16827,15 +16827,15 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
         }
       },
       _suspendUpdates: function _suspendUpdates() {
-        this._suspendUpdates += 1;
+        this._suspendUpdateCount += 1;
       },
       _resumeUpdates: function _resumeUpdates() {
         var _this5 = this;
 
-        this._suspendUpdates -= 1;
-        if (this._suspendUpdates < 0) {
-          this._suspendUpdates = 0;
-        } else if (this._suspendUpdates === 0) {
+        this._suspendUpdateCount -= 1;
+        if (this._suspendUpdateCount < 0) {
+          this._suspendUpdateCount = 0;
+        } else if (this._suspendUpdateCount === 0) {
           if (this._needsUpdate) {
             this._needsUpdate = false;
             $tracker.nonreactive(function () {
@@ -17298,6 +17298,9 @@ exports.default = ['immutable', '@event', 'VM_DEBUG', 'log', function (Immutable
           return x.dispose();
         });
         this._children = null;
+        if (this.parent) {
+          this.parent._children = this.parent._children.remove(this);
+        }
         this._onDispose.raise();
         if (VM_DEBUG) {
           log('dispose', 'comp', this.__id);
@@ -18349,4 +18352,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?7d4a29e77dad15f916e0134c27429925273fe7c4
+//# sourceMappingURL=raichu.js.map?a470f66c921e8579a53d67be38ac7d6ef9098616
