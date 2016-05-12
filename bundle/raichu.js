@@ -16654,6 +16654,9 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
 
         this._autoRender = $tracker.autorun();
         this._autoAction = $tracker.autorun();
+        this._eventQueue = [];
+        this._updatesSuspended = 0;
+        this._needsUpdate = false;
 
         this._props = propsSchema && propsSchema.cast() || {};
         this._autoProps = $tracker.autorun(function () {
@@ -16696,10 +16699,6 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
             });
           }
         }
-
-        this._eventQueue = [];
-        this._updatesSuspended = 0;
-        this._needsUpdate = false;
 
         return null;
       },
@@ -16794,7 +16793,7 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
       render: function render() {
         var _this4 = this;
 
-        var result;
+        var result = void 0;
         this._autoRender.replace(function (comp) {
           if (comp.isFirstRun) {
             var component = new Component();
@@ -16805,7 +16804,7 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
             result = component.render();
           } else {
             $tracker.nonreactive(function () {
-              if (_this4._suspendUpdateCount > 0) {
+              if (_this4._updatesSuspended > 0) {
                 _this4._needsUpdate = true;
               } else {
                 _this4.forceUpdate(_this4._afterUpdate);
@@ -16827,15 +16826,15 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
         }
       },
       _suspendUpdates: function _suspendUpdates() {
-        this._suspendUpdateCount += 1;
+        this._updatesSuspended += 1;
       },
       _resumeUpdates: function _resumeUpdates() {
         var _this5 = this;
 
-        this._suspendUpdateCount -= 1;
-        if (this._suspendUpdateCount < 0) {
-          this._suspendUpdateCount = 0;
-        } else if (this._suspendUpdateCount === 0) {
+        this._updatesSuspended -= 1;
+        if (this._updatesSuspended < 0) {
+          this._updatesSuspended = 0;
+        } else if (this._updatesSuspended === 0) {
           if (this._needsUpdate) {
             this._needsUpdate = false;
             $tracker.nonreactive(function () {
@@ -18352,4 +18351,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?a470f66c921e8579a53d67be38ac7d6ef9098616
+//# sourceMappingURL=raichu.js.map?436bd53e44fe6ee37aef999dbb4f343aeb0f4178

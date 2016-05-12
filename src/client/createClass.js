@@ -41,6 +41,9 @@ function(
       getInitialState() {
         this._autoRender = $tracker.autorun();
         this._autoAction = $tracker.autorun();
+        this._eventQueue = [];
+        this._updatesSuspended = 0;
+        this._needsUpdate = false;
 
         this._props = propsSchema && propsSchema.cast() || {};
         this._autoProps = $tracker.autorun( () => {
@@ -75,10 +78,6 @@ function(
             });
           }
         }
-
-        this._eventQueue = [];
-        this._updatesSuspended = 0;
-        this._needsUpdate = false;
 
         return null;
       },
@@ -135,7 +134,7 @@ function(
       },
 
       render() {
-        var result;
+        let result;
         this._autoRender.replace( comp => {
           if ( comp.isFirstRun ) {
             let component = new Component();
@@ -146,7 +145,7 @@ function(
             result = component.render();
           } else {
             $tracker.nonreactive( () => {
-              if ( this._suspendUpdateCount > 0 ) {
+              if ( this._updatesSuspended > 0 ) {
                 this._needsUpdate = true;
               } else {
                 this.forceUpdate(this._afterUpdate);
@@ -166,14 +165,14 @@ function(
       },
 
       _suspendUpdates() {
-        this._suspendUpdateCount += 1;
+        this._updatesSuspended += 1;
       },
 
       _resumeUpdates() {
-        this._suspendUpdateCount -= 1;
-        if ( this._suspendUpdateCount < 0 ) {
-          this._suspendUpdateCount = 0;
-        } else if ( this._suspendUpdateCount === 0 ) {
+        this._updatesSuspended -= 1;
+        if ( this._updatesSuspended < 0 ) {
+          this._updatesSuspended = 0;
+        } else if ( this._updatesSuspended === 0 ) {
           if ( this._needsUpdate ) {
             this._needsUpdate = false;
             $tracker.nonreactive( () => {
