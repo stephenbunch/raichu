@@ -82,10 +82,12 @@ function(
       if ( element && element.nodeName ) {
         let href = element.href;
         let uri = new URI( href );
+        let target = element.getAttribute('target');
         if (
           uri.host() === window.location.host &&
           uri.protocol() + ':' === window.location.protocol &&
-          !element.hasAttribute( 'data-external' )
+          !element.hasAttribute( 'data-external' ) &&
+          (!target || target === '_self')
         ) {
           e.preventDefault();
           this.go( element.getAttribute( 'href' ) );

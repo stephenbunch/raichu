@@ -15334,7 +15334,8 @@ exports.default = ['immutable', 'window', '@bind', '@event', 'common/ReactiveVal
         if (element && element.nodeName) {
           var href = element.href;
           var uri = new URI(href);
-          if (uri.host() === window.location.host && uri.protocol() + ':' === window.location.protocol && !element.hasAttribute('data-external')) {
+          var target = element.getAttribute('target');
+          if (uri.host() === window.location.host && uri.protocol() + ':' === window.location.protocol && !element.hasAttribute('data-external') && (!target || target === '_self')) {
             e.preventDefault();
             this.go(element.getAttribute('href'));
           }
@@ -18351,4 +18352,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?436bd53e44fe6ee37aef999dbb4f343aeb0f4178
+//# sourceMappingURL=raichu.js.map?52202ddaf1f63c2c4dd32cc1a67cb9bd677ba35a
