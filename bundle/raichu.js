@@ -16687,18 +16687,19 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
 
         if (stateSchema) {
           this._state = stateSchema.cast();
-          if (spec.initialAction) {
-            this._autoAction.replace(function () {
-              var component = new Component();
-              component.context = _this._context;
-              component.props = _this._props;
-              component.state = _this._state;
-              component.dispatch = _this._dispatch;
-              component.suspendUpdates = _this._suspendUpdates;
-              component.resumeUpdates = _this._resumeUpdates;
-              component.initialAction();
-            });
-          }
+        }
+
+        if (spec.initialAction) {
+          this._autoAction.replace(function () {
+            var component = new Component();
+            component.context = _this._context;
+            component.props = _this._props;
+            component.state = _this._state;
+            component.dispatch = _this._dispatch;
+            component.suspendUpdates = _this._suspendUpdates;
+            component.resumeUpdates = _this._resumeUpdates;
+            component.initialAction();
+          });
         }
 
         return null;
@@ -18352,4 +18353,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?52202ddaf1f63c2c4dd32cc1a67cb9bd677ba35a
+//# sourceMappingURL=raichu.js.map?4e106a531e70ffcfcec5b54fbbb0a42f3e427d2f

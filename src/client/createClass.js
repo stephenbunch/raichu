@@ -65,18 +65,19 @@ function(
 
         if ( stateSchema ) {
           this._state = stateSchema.cast();
-          if ( spec.initialAction ) {
-            this._autoAction.replace( () => {
-              var component = new Component();
-              component.context = this._context;
-              component.props = this._props;
-              component.state = this._state;
-              component.dispatch = this._dispatch;
-              component.suspendUpdates = this._suspendUpdates;
-              component.resumeUpdates = this._resumeUpdates;
-              component.initialAction();
-            });
-          }
+        }
+  
+        if ( spec.initialAction ) {
+          this._autoAction.replace( () => {
+            var component = new Component();
+            component.context = this._context;
+            component.props = this._props;
+            component.state = this._state;
+            component.dispatch = this._dispatch;
+            component.suspendUpdates = this._suspendUpdates;
+            component.resumeUpdates = this._resumeUpdates;
+            component.initialAction();
+          });
         }
 
         return null;
