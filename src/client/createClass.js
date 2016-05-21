@@ -66,7 +66,7 @@ function(
         if ( stateSchema ) {
           this._state = stateSchema.cast();
         }
-  
+
         if ( spec.initialAction ) {
           this._autoAction.replace( () => {
             var component = new Component();
@@ -143,6 +143,8 @@ function(
             component.props = this._props;
             component.context = this._context;
             component.dispatch = this._dispatch;
+            component.suspendUpdates = this._suspendUpdates;
+            component.resumeUpdates = this._resumeUpdates;
             result = component.render();
           } else {
             $tracker.nonreactive( () => {

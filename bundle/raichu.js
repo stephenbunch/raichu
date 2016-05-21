@@ -16803,6 +16803,8 @@ exports.default = ['react', 'common/$tracker', 'EventEmitter', 'react-dom', 'com
             component.props = _this4._props;
             component.context = _this4._context;
             component.dispatch = _this4._dispatch;
+            component.suspendUpdates = _this4._suspendUpdates;
+            component.resumeUpdates = _this4._resumeUpdates;
             result = component.render();
           } else {
             $tracker.nonreactive(function () {
@@ -18353,4 +18355,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?4e106a531e70ffcfcec5b54fbbb0a42f3e427d2f
+//# sourceMappingURL=raichu.js.map?d9daf514e5a3a27348f960d95bc5e297e520fbce
