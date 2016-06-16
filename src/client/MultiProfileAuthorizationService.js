@@ -65,6 +65,7 @@ function(
         this._authorization.authorize(
           this._authentication.profiles.get( key )
         );
+        this._didUpdate.raise();
         this._didSwitchProfile.raise();
       }
     }
