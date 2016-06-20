@@ -7,14 +7,17 @@ function( setTimeout, clearTimeout ) {
     }
 
     async invokeAsync( socket, next ) {
+      var channel = socket.channel();
       var pingTimer;
       var ping = () => {
         pingTimer = setTimeout( () => {
-          socket.send( JSON.stringify({ type: 'ping', data: 1 }) );
+          channel.send( 'ping', 1 );
           ping();
         }, this._pingInterval );
       };
-      socket.onClose += () => clearTimeout( pingTimer );
+      channel.onClose += () => {
+        clearTimeout( pingTimer );
+      };
       ping();
       await next.invokeAsync( socket );
     }

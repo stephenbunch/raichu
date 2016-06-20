@@ -10,16 +10,15 @@ function(
     }
 
     async invokeAsync( socket, next ) {
-      socket.claims = await this._parseClaimsAsync( socket );
+      socket.claims = await this._claimsFromSocketAsync( socket );
       if ( !socket.claims ) {
         socket.close();
         return;
       }
-      this._receiveSocket( socket );
-      await next.invokeAsync( socket );
+      this._receiveSocketAsync( socket, next );
     }
 
-    _receiveSocket( socket ) {
+    async _receiveSocketAsync( socket, next ) {
       var channel = socket.channel();
       var expireTimeout;
 
@@ -27,16 +26,14 @@ function(
         try {
           clearTimeout( expireTimeout );
           let current = socket.claims;
-          socket.claims = await this._parseClaimsAsync( socket, token );
+          socket.claims = await this._claimsFromTokenAsync( token );
           if ( !socket.claims ) {
             socket.close();
           } else {
             if ( !this._areClaimsEqual( socket.claims, current ) ) {
               socket.reset();
-              this._receiveSocket( socket );
-              await next.invokeAsync( socket );
+              this._receiveSocketAsync( socket, next );
             }
-            expireTimeout = this._setExpireTimeout( socket );
           }
         } catch ( err ) {
           console.log( formatError( err ) );
@@ -48,16 +45,23 @@ function(
       };
 
       expireTimeout = this._setExpireTimeout( socket );
+      await next.invokeAsync( socket );
     }
 
-    async _parseClaimsAsync( socket ) {
+    async _claimsFromSocketAsync( socket ) {
       var query = URI.parseQuery( new URI( socket.url ).query() );
       var claims;
       if ( query.token ) {
-        try {
-          claims = await this._tokenParser.parseAsync( query.token );
-        } catch ( err ) {}
+        claims = await this._claimsFromTokenAsync( query.token );
       }
+      return claims;
+    }
+
+    async _claimsFromTokenAsync( token ) {
+      var claims;
+      try {
+        claims = await this._tokenParser.parseAsync( token );
+      } catch ( err ) {}
       return claims;
     }
 
