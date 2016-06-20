@@ -15625,6 +15625,7 @@ exports.default = ['LocalStorage', 'MultiProfileAuthenticationClient', 'Authoriz
         if (key !== this._currentProfile) {
           this._currentProfile = key;
           this._authorization.authorize(this._authentication.profiles.get(key));
+          this._didUpdate.raise(new AccessToken(this._authentication.profiles.get(key).access_token));
           this._didSwitchProfile.raise();
         }
       }
@@ -18355,4 +18356,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?d9daf514e5a3a27348f960d95bc5e297e520fbce
+//# sourceMappingURL=raichu.js.map?78bbfcefa18eed713a9c51d6f3b0f691b63feeca

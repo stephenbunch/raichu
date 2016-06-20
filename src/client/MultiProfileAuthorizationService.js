@@ -65,7 +65,9 @@ function(
         this._authorization.authorize(
           this._authentication.profiles.get( key )
         );
-        this._didUpdate.raise();
+        this._didUpdate.raise(
+          new AccessToken( this._authentication.profiles.get( key ).access_token )
+        );
         this._didSwitchProfile.raise();
       }
     }
