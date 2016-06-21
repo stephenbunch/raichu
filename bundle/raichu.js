@@ -14686,13 +14686,15 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-exports.default = ['window', 'setTimeout', 'lodash.assign', 'fetch', 'moment', function (window, setTimeout, assign, fetch, moment) {
+exports.default = ['window', 'setTimeout', 'fetch', 'moment', function (window, setTimeout, fetch, moment) {
   return function () {
     function HttpClient() {
       _classCallCheck(this, HttpClient);
@@ -14903,13 +14905,13 @@ exports.default = ['window', 'setTimeout', 'lodash.assign', 'fetch', 'moment', f
         if (typeof url === 'string') {
           if (typeof options === 'function') {
             requestFactory = function requestFactory() {
-              return assign({
+              return _extends({
                 url: url
               }, options());
             };
           } else {
             requestFactory = function requestFactory() {
-              return assign({
+              return _extends({
                 url: url
               }, options);
             };
@@ -14983,6 +14985,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -14996,11 +15000,16 @@ exports.default = ['lodash.isplainobject', function (isPlainObject) {
     _createClass(JsonRequestTransform, [{
       key: 'transformRequest',
       value: function transformRequest(request) {
+        request = _extends({}, request);
         if (request.body !== undefined && !(request.body instanceof File)) {
           request.body = JSON.stringify(request.body);
-          request.headers['Content-Type'] = 'application/json';
+          request.headers = _extends({}, request.headers, {
+            'Content-Type': 'application/json'
+          });
         }
-        request.headers['Accept'] = 'application/json';
+        request.headers = _extends({}, request.headers, {
+          'Accept': 'application/json'
+        });
         return request;
       }
     }]);
@@ -18389,4 +18398,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?2eef71132085e4af97510f3b3b8df19d681f6223
+//# sourceMappingURL=raichu.js.map?0f850b74ec9e1b2b5642076673a7c639a6485e87

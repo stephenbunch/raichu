@@ -1,6 +1,6 @@
 export default [
-  'window', 'setTimeout', 'lodash.assign', 'fetch', 'moment',
-function( window, setTimeout, assign, fetch, moment ) {
+  'window', 'setTimeout', 'fetch', 'moment',
+function( window, setTimeout, fetch, moment ) {
   return class HttpClient {
     constructor() {
       this._maxDelay = moment.duration( 10, 'seconds' ).asMilliseconds();
@@ -61,15 +61,17 @@ function( window, setTimeout, assign, fetch, moment ) {
       if ( typeof url === 'string' ) {
         if ( typeof options === 'function' ) {
           requestFactory = () => {
-            return assign({
-              url: url
-            }, options() );
+            return {
+              url,
+              ...options()
+            };
           };
         } else {
           requestFactory = () => {
-            return assign({
-              url: url
-            }, options );
+            return {
+              url,
+              ...options
+            };
           };
         }
       } else if ( typeof url === 'function' ) {
