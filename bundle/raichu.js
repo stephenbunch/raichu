@@ -14345,6 +14345,7 @@ exports.default = ['@event', 'HttpClient', 'JsonRequestTransform', 'JsonResponse
                   _context2.t0 = _context2['catch'](5);
 
                   if (this._refreshToken === refreshToken) {
+                    this._refreshPending = false;
                     if (_context2.t0.statusCode === 403) {
                       this.unauthorize();
                     } else {
@@ -18178,10 +18179,20 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEBUG', 'log', function (Celebi, list, $tracker, formatObject, VM_DEBUG, log) {
+
+  var VALUES = Symbol();
+  var INIT = Symbol();
+  var ID = Symbol();
+
   var uid = 0;
+
   return function vm(schema) {
     if (Celebi.isSchema(schema)) {
       if (schema.attributes.type !== 'shape') {
@@ -18199,6 +18210,7 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
         return node;
       }
     });
+    var Model = createClass(schema.attributes.keys);
     return schema.extend({
       attributes: {
         type: 'vm',
@@ -18206,82 +18218,103 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
       },
 
       cast: function cast(source, options) {
-        var _this = this;
-
         if (source === null || (typeof source === 'undefined' ? 'undefined' : _typeof(source)) !== 'object') {
           source = {};
         }
-        var model = VM_DEBUG ? {
-          __id: ++uid
-        } : {};
-
-        var _loop = function _loop(key) {
-          var _value = void 0;
-          var set = function set(value, isFirstRun) {
-            value = _this.attributes.keys[key].cast(value);
-            if (value !== _value) {
-              _value = value;
-              if (!isFirstRun) {
-                if (VM_DEBUG) {
-                  log('change', 'model', model.__id, key);
-                }
-                $tracker.changed(model, key);
-              }
-            }
-          };
-          Object.defineProperty(model, key, {
-            enumerable: true,
-            configurable: true,
-            get: function get() {
-              if (VM_DEBUG) {
-                if ($tracker.currentComputation) {
-                  log('comp', $tracker.currentComputation.__id, 'depend', 'model', model.__id, key);
-                } else {
-                  log('read', 'model', model.__id, key);
-                }
-              }
-              $tracker.depend(model, key);
-              return _value;
-            },
-            set: function (_set) {
-              function set(_x) {
-                return _set.apply(this, arguments);
-              }
-
-              set.toString = function () {
-                return _set.toString();
-              };
-
-              return set;
-            }(function (value) {
-              return set(value, false);
-            })
-          });
-          $tracker.attach(function (comp) {
-            set(source[key], comp && comp.isFirstRun);
-          });
-        };
-
-        for (var key in this.attributes.keys) {
-          _loop(key);
+        if (source[ID] === Model.id) {
+          return source;
+        } else {
+          return new Model(source);
         }
-        model.toObject = function () {
-          var obj = {};
-          for (var _key in _this.attributes.keys) {
-            var value = formatObject(model[_key]);
-            if (value !== undefined) {
-              obj[_key] = value;
-            }
-          }
-          return obj;
-        };
-        model.toJSON = function () {
-          return model.toObject();
-        };
-        return model;
       }
     });
   };
+
+  function createClass(KEYS) {
+    var Model = function () {
+      function Model(source) {
+        var _this = this;
+
+        _classCallCheck(this, Model);
+
+        this[INIT] = true;
+        if (VM_DEBUG) {
+          this.__id = ++uid;
+        }
+        this[VALUES] = new Map();
+
+        var _loop = function _loop(key) {
+          $tracker.attach(function () {
+            _this[key] = source[key];
+          });
+        };
+
+        for (var key in KEYS) {
+          _loop(key);
+        }
+        this[INIT] = false;
+        this[ID] = this.constructor.id;
+      }
+
+      _createClass(Model, [{
+        key: 'toObject',
+        value: function toObject() {
+          var obj = {};
+          for (var key in KEYS) {
+            var value = formatObject(this[key]);
+            if (value !== undefined) {
+              obj[key] = value;
+            }
+          }
+          return obj;
+        }
+      }, {
+        key: 'toJSON',
+        value: function toJSON() {
+          return this.toObject();
+        }
+      }]);
+
+      return Model;
+    }();
+
+    Model.id = ++uid;
+
+    var _loop2 = function _loop2(key) {
+      Object.defineProperty(Model.prototype, key, {
+        enumerable: true,
+        configurable: true,
+        get: function get() {
+          if (VM_DEBUG) {
+            if ($tracker.currentComputation) {
+              log('comp', $tracker.currentComputation.__id, 'depend', 'model', this.__id, key);
+            } else {
+              log('read', 'model', this.__id, key);
+            }
+          }
+          $tracker.depend(this, key);
+          return this[VALUES].get(key);
+        },
+        set: function set(value) {
+          value = KEYS[key].cast(value);
+          if (value !== this[VALUES].get(key)) {
+            this[VALUES].set(key, value);
+            if (!this[INIT]) {
+              if (VM_DEBUG) {
+                log('change', 'model', this.__id, key);
+              }
+              $tracker.changed(this, key);
+            }
+          }
+        }
+      });
+    };
+
+    for (var key in KEYS) {
+      _loop2(key);
+    }
+    return Model;
+  }
 }];
 
 },{}],105:[function(require,module,exports){
@@ -18356,4 +18389,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?78bbfcefa18eed713a9c51d6f3b0f691b63feeca
+//# sourceMappingURL=raichu.js.map?2eef71132085e4af97510f3b3b8df19d681f6223

@@ -107,6 +107,7 @@ function(
 
         } catch ( err ) {
           if ( this._refreshToken === refreshToken ) {
+            this._refreshPending = false;
             if ( err.statusCode === 403 ) {
               this.unauthorize();
             } else {
