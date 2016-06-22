@@ -1,11 +1,6 @@
 export default [
   'celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEBUG', 'log',
 function( Celebi, list, $tracker, formatObject, VM_DEBUG, log ) {
-
-  const VALUES = Symbol();
-  const INIT = Symbol();
-  const ID = Symbol();
-
   let uid = 0;
 
   return function vm( schema ) {
@@ -36,7 +31,7 @@ function( Celebi, list, $tracker, formatObject, VM_DEBUG, log ) {
         if ( source === null || typeof source !== 'object' ) {
           source = {};
         }
-        if ( source[ ID ] === Model.id ) {
+        if ( source.__ID === Model.id ) {
           return source;
         } else {
           return new Model( source );
@@ -48,18 +43,18 @@ function( Celebi, list, $tracker, formatObject, VM_DEBUG, log ) {
   function createClass( KEYS ) {
     const Model = class {
       constructor( source ) {
-        this[ INIT ] = true;
+        this.__INIT = true;
         if ( VM_DEBUG ) {
           this.__id = ++uid;
         }
-        this[ VALUES ] = new Map();
+        this.__VALUES = new Map();
         for ( let key in KEYS ) {
           $tracker.attach( () => {
             this[ key ] = source[ key ];
           });
         }
-        this[ INIT ] = false;
-        this[ ID ] = this.constructor.id;
+        this.__INIT = false;
+        this.__ID = this.constructor.id;
       }
 
       toObject() {
@@ -93,13 +88,13 @@ function( Celebi, list, $tracker, formatObject, VM_DEBUG, log ) {
             }
           }
           $tracker.depend( this, key );
-          return this[ VALUES ].get( key );
+          return this.__VALUES.get( key );
         },
         set( value ) {
           value = KEYS[ key ].cast( value );
-          if ( value !== this[ VALUES ].get( key ) ) {
-            this[ VALUES ].set( key, value );
-            if ( !this[ INIT ] ) {
+          if ( value !== this.__VALUES.get( key ) ) {
+            this.__VALUES.set( key, value );
+            if ( !this.__INIT ) {
               if ( VM_DEBUG ) {
                 log( 'change', 'model', this.__id, key );
               }

@@ -17008,8 +17008,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = ['lodash.find', function (find) {
-  var cacheKey = Symbol();
-
   function sequenceEquals(a, b) {
     if (a.length !== b.length) {
       return false;
@@ -17030,10 +17028,10 @@ exports.default = ['lodash.find', function (find) {
       get: function get() {
         var _this = this;
 
-        if (!this[cacheKey]) {
-          this[cacheKey] = {};
+        if (!this.__CACHE) {
+          this.__CACHE = {};
         }
-        var cache = this[cacheKey];
+        var cache = this.__CACHE;
         if (!cache[name]) {
           (function () {
             var tasks = [];
@@ -18195,11 +18193,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEBUG', 'log', function (Celebi, list, $tracker, formatObject, VM_DEBUG, log) {
-
-  var VALUES = Symbol();
-  var INIT = Symbol();
-  var ID = Symbol();
-
   var uid = 0;
 
   return function vm(schema) {
@@ -18230,7 +18223,7 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
         if (source === null || (typeof source === 'undefined' ? 'undefined' : _typeof(source)) !== 'object') {
           source = {};
         }
-        if (source[ID] === Model.id) {
+        if (source.__ID === Model.id) {
           return source;
         } else {
           return new Model(source);
@@ -18246,11 +18239,11 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
 
         _classCallCheck(this, Model);
 
-        this[INIT] = true;
+        this.__INIT = true;
         if (VM_DEBUG) {
           this.__id = ++uid;
         }
-        this[VALUES] = new Map();
+        this.__VALUES = new Map();
 
         var _loop = function _loop(key) {
           $tracker.attach(function () {
@@ -18261,8 +18254,8 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
         for (var key in KEYS) {
           _loop(key);
         }
-        this[INIT] = false;
-        this[ID] = this.constructor.id;
+        this.__INIT = false;
+        this.__ID = this.constructor.id;
       }
 
       _createClass(Model, [{
@@ -18302,13 +18295,13 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
             }
           }
           $tracker.depend(this, key);
-          return this[VALUES].get(key);
+          return this.__VALUES.get(key);
         },
         set: function set(value) {
           value = KEYS[key].cast(value);
-          if (value !== this[VALUES].get(key)) {
-            this[VALUES].set(key, value);
-            if (!this[INIT]) {
+          if (value !== this.__VALUES.get(key)) {
+            this.__VALUES.set(key, value);
+            if (!this.__INIT) {
               if (VM_DEBUG) {
                 log('change', 'model', this.__id, key);
               }
@@ -18398,4 +18391,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?0f850b74ec9e1b2b5642076673a7c639a6485e87
+//# sourceMappingURL=raichu.js.map?d857457c3be54076ee95a2b1534100193cab4138

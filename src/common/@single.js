@@ -1,6 +1,4 @@
 export default [ 'lodash.find', function( find ) {
-  var cacheKey = Symbol();
-
   function sequenceEquals( a, b ) {
     if ( a.length !== b.length ) {
       return false;
@@ -19,10 +17,10 @@ export default [ 'lodash.find', function( find ) {
       configurable: true,
       enumerable: false,
       get: function() {
-        if ( !this[ cacheKey ] ) {
-          this[ cacheKey ] = {};
+        if ( !this.__CACHE ) {
+          this.__CACHE = {};
         }
-        var cache = this[ cacheKey ];
+        var cache = this.__CACHE;
         if ( !cache[ name ] ) {
           let tasks = [];
           cache[ name ] = ( ...args ) => {
