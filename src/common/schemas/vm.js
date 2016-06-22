@@ -16,6 +16,15 @@ export default [ 'celebi', 'schemas/list', function( Celebi, list ) {
         return node;
       }
     });
-    return Celebi.vm( schema );
+    let parent = Celebi.vm( schema );
+    return parent.extend({
+      cast( value, options ) {
+        value = parent.cast.call( this, value, options );
+        // Provide the same api as rxvm.
+        value.toObject = function() { return this; };
+        value.toJSON = function() { return this; };
+        return value;
+      }
+    });
   };
 }];

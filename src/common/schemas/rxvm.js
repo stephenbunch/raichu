@@ -43,22 +43,30 @@ function( Celebi, list, $tracker, formatObject, VM_DEBUG, log ) {
   function createClass( KEYS ) {
     const Model = class {
       constructor( source ) {
-        this.__INIT = true;
+        Object.defineProperty( this, '__INIT', {
+          value: true,
+          writable: true
+        });
         if ( VM_DEBUG ) {
           this.__id = ++uid;
         }
-        this.__VALUES = new Map();
+        Object.defineProperty( this, '__VALUES', {
+          value: new Map()
+        });
         for ( let key in KEYS ) {
           $tracker.attach( () => {
             this[ key ] = source[ key ];
           });
         }
         this.__INIT = false;
-        this.__ID = this.constructor.id;
+      }
+
+      get __ID() {
+        return this.constructor.id;
       }
 
       toObject() {
-        let obj = {};
+        let obj = { ...this };
         for ( let key in KEYS ) {
           let value = formatObject( this[ key ] );
           if ( value !== undefined ) {

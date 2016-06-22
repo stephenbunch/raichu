@@ -18186,6 +18186,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -18239,11 +18241,16 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
 
         _classCallCheck(this, Model);
 
-        this.__INIT = true;
+        Object.defineProperty(this, '__INIT', {
+          value: true,
+          writable: true
+        });
         if (VM_DEBUG) {
           this.__id = ++uid;
         }
-        this.__VALUES = new Map();
+        Object.defineProperty(this, '__VALUES', {
+          value: new Map()
+        });
 
         var _loop = function _loop(key) {
           $tracker.attach(function () {
@@ -18255,13 +18262,12 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
           _loop(key);
         }
         this.__INIT = false;
-        this.__ID = this.constructor.id;
       }
 
       _createClass(Model, [{
         key: 'toObject',
         value: function toObject() {
-          var obj = {};
+          var obj = _extends({}, this);
           for (var key in KEYS) {
             var value = formatObject(this[key]);
             if (value !== undefined) {
@@ -18274,6 +18280,11 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
         key: 'toJSON',
         value: function toJSON() {
           return this.toObject();
+        }
+      }, {
+        key: '__ID',
+        get: function get() {
+          return this.constructor.id;
         }
       }]);
 
@@ -18343,7 +18354,20 @@ exports.default = ['celebi', 'schemas/list', function (Celebi, list) {
         return node;
       }
     });
-    return Celebi.vm(schema);
+    var parent = Celebi.vm(schema);
+    return parent.extend({
+      cast: function cast(value, options) {
+        value = parent.cast.call(this, value, options);
+        // Provide the same api as rxvm.
+        value.toObject = function () {
+          return this;
+        };
+        value.toJSON = function () {
+          return this;
+        };
+        return value;
+      }
+    });
   };
 }];
 
@@ -18391,4 +18415,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?d857457c3be54076ee95a2b1534100193cab4138
+//# sourceMappingURL=raichu.js.map?70857ec03c39661fd7ad5a1f5cd7a4615db3da85
