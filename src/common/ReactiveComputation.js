@@ -8,7 +8,7 @@ function( Immutable, event, VM_DEBUG, log ) {
       this.__id = ++uid;
       this._data = new Map();
       this._callback = callback || (() => {});
-      this._deps = new Immutable.Map();
+      this._deps = new Map();
       this._isFirstRun = false;
       this._isRunning = false;
 
@@ -77,12 +77,11 @@ function( Immutable, event, VM_DEBUG, log ) {
         throw new Error( 'Dependencies must be added from within a computation.' );
       }
       if ( !this._deps.has( instance ) ) {
-        this._deps = this._deps.set( instance, new Immutable.Set() );
+        this._deps.set( instance, [] );
       }
-      var paths = this._deps.get( instance );
-      if ( path && !paths.has( path ) ) {
-        paths = paths.add( path );
-        this._deps = this._deps.set( instance, paths );
+      let paths = this._deps.get( instance );
+      if ( path && paths.indexOf( path ) === -1 ) {
+        paths.push( path );
       }
     }
 
@@ -94,7 +93,7 @@ function( Immutable, event, VM_DEBUG, log ) {
         if ( instance ) {
           if ( this._deps.has( instance ) ) {
             if ( path ) {
-              if ( this._deps.get( instance ).has( path ) ) {
+              if ( this._deps.get( instance ).indexOf( path ) > -1 ) {
                 this._run();
               } else {
                 // Don't run if a path was specified, but wasn't depended on.
@@ -118,7 +117,7 @@ function( Immutable, event, VM_DEBUG, log ) {
     }
 
     _run() {
-      this._deps = this._deps.clear();
+      this._deps = new Map();
 
       this.isPending = false;
       this._children.forEach( x => x.dispose() );

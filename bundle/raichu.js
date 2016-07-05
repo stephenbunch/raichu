@@ -17291,7 +17291,7 @@ exports.default = ['immutable', '@event', 'VM_DEBUG', 'log', function (Immutable
       this.__id = ++uid;
       this._data = new Map();
       this._callback = callback || function () {};
-      this._deps = new Immutable.Map();
+      this._deps = new Map();
       this._isFirstRun = false;
       this._isRunning = false;
 
@@ -17353,12 +17353,11 @@ exports.default = ['immutable', '@event', 'VM_DEBUG', 'log', function (Immutable
           throw new Error('Dependencies must be added from within a computation.');
         }
         if (!this._deps.has(instance)) {
-          this._deps = this._deps.set(instance, new Immutable.Set());
+          this._deps.set(instance, []);
         }
         var paths = this._deps.get(instance);
-        if (path && !paths.has(path)) {
-          paths = paths.add(path);
-          this._deps = this._deps.set(instance, paths);
+        if (path && paths.indexOf(path) === -1) {
+          paths.push(path);
         }
       }
     }, {
@@ -17371,7 +17370,7 @@ exports.default = ['immutable', '@event', 'VM_DEBUG', 'log', function (Immutable
           if (instance) {
             if (this._deps.has(instance)) {
               if (path) {
-                if (this._deps.get(instance).has(path)) {
+                if (this._deps.get(instance).indexOf(path) > -1) {
                   this._run();
                 } else {
                   // Don't run if a path was specified, but wasn't depended on.
@@ -17397,7 +17396,7 @@ exports.default = ['immutable', '@event', 'VM_DEBUG', 'log', function (Immutable
     }, {
       key: '_run',
       value: function _run() {
-        this._deps = this._deps.clear();
+        this._deps = new Map();
 
         this.isPending = false;
         this._children.forEach(function (x) {
@@ -18415,4 +18414,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?70857ec03c39661fd7ad5a1f5cd7a4615db3da85
+//# sourceMappingURL=raichu.js.map?6d45eb58093337792b79026e41824c98341d554f
