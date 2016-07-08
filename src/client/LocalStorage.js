@@ -10,6 +10,10 @@ export default [ 'window', function( window ) {
       }
     }
 
+    get isLocalStorageSupported() {
+      return this._isLocalStorageSupported;
+    }
+
     get( key ) {
       if ( window.localStorage[ key ] !== undefined ) {
         return JSON.parse( window.localStorage[ key ] );

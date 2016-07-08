@@ -1,9 +1,9 @@
 export default [
-  'LocalStorage', 'MultiProfileAuthenticationClient', 'AuthorizationClient',
+  'MultiProfileAuthenticationClient', 'AuthorizationClient',
   '@event', '@bind', 'immutable', 'AccessToken',
 function(
-  LocalStorage, MultiProfileAuthenticationClient, AuthorizationClient, event,
-  bind, Immutable, AccessToken
+  MultiProfileAuthenticationClient, AuthorizationClient, event, bind, Immutable,
+  AccessToken
 ) {
   return class MultiProfileAuthorizationService {
     constructor({
@@ -11,11 +11,10 @@ function(
       logoutUrl,
       refreshUrl,
       autoRefresh = false,
-      storageKey = 'authData'
+      store
     }) {
-      this._store = new LocalStorage();
-      this._storageKey = storageKey;
-      var authData = this._store.get( this._storageKey ) || {
+      this._store = store;
+      var authData = this._store.get() || {
         profileData: null,
         lastProfile: null
       };
@@ -90,7 +89,7 @@ function(
 
     logout() {
       if ( this.isLoggedIn ) {
-        this._store.delete( this._storageKey );
+        this._store.delete();
         this._authorization.unauthorize();
         this._authentication.logout();
         this._update();
@@ -102,7 +101,7 @@ function(
     _authorization_didUpdate( accessToken ) {
       var profileData = JSON.parse( JSON.stringify( this._authentication.profiles ) );
       profileData[ this._currentProfile ].access_token = accessToken.value;
-      this._store.set( this._storageKey, {
+      this._store.set({
         profileData,
         lastProfile: this._currentProfile
       });

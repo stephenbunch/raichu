@@ -15214,6 +15214,11 @@ exports.default = ['window', function (window) {
       value: function _delete(key) {
         delete window.localStorage[key];
       }
+    }, {
+      key: 'isLocalStorageSupported',
+      get: function get() {
+        return this._isLocalStorageSupported;
+      }
     }]);
 
     return LocalStorage;
@@ -15576,7 +15581,7 @@ function _initializerWarningHelper(descriptor, context) {
   throw new Error('Decorating class property failed. Please ensure that transform-class-properties is enabled.');
 }
 
-exports.default = ['LocalStorage', 'MultiProfileAuthenticationClient', 'AuthorizationClient', '@event', '@bind', 'immutable', 'AccessToken', function (LocalStorage, MultiProfileAuthenticationClient, AuthorizationClient, event, bind, Immutable, AccessToken) {
+exports.default = ['MultiProfileAuthenticationClient', 'AuthorizationClient', '@event', '@bind', 'immutable', 'AccessToken', function (MultiProfileAuthenticationClient, AuthorizationClient, event, bind, Immutable, AccessToken) {
   var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5;
 
   return _class = function () {
@@ -15586,8 +15591,7 @@ exports.default = ['LocalStorage', 'MultiProfileAuthenticationClient', 'Authoriz
       var refreshUrl = _ref.refreshUrl;
       var _ref$autoRefresh = _ref.autoRefresh;
       var autoRefresh = _ref$autoRefresh === undefined ? false : _ref$autoRefresh;
-      var _ref$storageKey = _ref.storageKey;
-      var storageKey = _ref$storageKey === undefined ? 'authData' : _ref$storageKey;
+      var store = _ref.store;
 
       _classCallCheck(this, MultiProfileAuthorizationService);
 
@@ -15601,9 +15605,8 @@ exports.default = ['LocalStorage', 'MultiProfileAuthenticationClient', 'Authoriz
 
       _initDefineProp(this, 'didSwitchProfile', _descriptor5, this);
 
-      this._store = new LocalStorage();
-      this._storageKey = storageKey;
-      var authData = this._store.get(this._storageKey) || {
+      this._store = store;
+      var authData = this._store.get() || {
         profileData: null,
         lastProfile: null
       };
@@ -15684,7 +15687,7 @@ exports.default = ['LocalStorage', 'MultiProfileAuthenticationClient', 'Authoriz
       key: 'logout',
       value: function logout() {
         if (this.isLoggedIn) {
-          this._store.delete(this._storageKey);
+          this._store.delete();
           this._authorization.unauthorize();
           this._authentication.logout();
           this._update();
@@ -15696,7 +15699,7 @@ exports.default = ['LocalStorage', 'MultiProfileAuthenticationClient', 'Authoriz
       value: function _authorization_didUpdate(accessToken) {
         var profileData = JSON.parse(JSON.stringify(this._authentication.profiles));
         profileData[this._currentProfile].access_token = accessToken.value;
-        this._store.set(this._storageKey, {
+        this._store.set({
           profileData: profileData,
           lastProfile: this._currentProfile
         });
@@ -18414,4 +18417,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?6d45eb58093337792b79026e41824c98341d554f
+//# sourceMappingURL=raichu.js.map?71cec14a71178bea4fb472861a5bf8130701f4cc
