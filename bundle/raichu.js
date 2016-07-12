@@ -18212,6 +18212,8 @@ exports.default = ['celebi', 'schemas/list', '$tracker', 'formatObject', 'VM_DEB
         return list(node.transform(transform));
       } else if (node.attributes.type === 'shape') {
         return vm(node);
+      } else if (node.attributes.type === 'struct') {
+        return node.transform(transform);
       } else {
         return node;
       }
@@ -18352,6 +18354,8 @@ exports.default = ['celebi', 'schemas/list', function (Celebi, list) {
         return list(node.transform(transform));
       } else if (node.attributes.type === 'shape') {
         return vm(node);
+      } else if (node.attributes.type === 'struct') {
+        return node.transform(transform);
       } else {
         return node;
       }
@@ -18417,4 +18421,4 @@ exports.default = ['react', 'immutable', function (React, Immutable) {
 
 },{}]},{},[83])(83)
 });
-//# sourceMappingURL=raichu.js.map?71cec14a71178bea4fb472861a5bf8130701f4cc
+//# sourceMappingURL=raichu.js.map?cb89de865afb3faa4b490368ba702c2535ad3436

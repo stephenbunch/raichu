@@ -12,6 +12,8 @@ export default [ 'celebi', 'schemas/list', function( Celebi, list ) {
         return list( node.transform( transform ) );
       } else if ( node.attributes.type === 'shape' ) {
         return vm( node );
+      } else if ( node.attributes.type === 'struct' ) {
+        return node.transform( transform );
       } else {
         return node;
       }

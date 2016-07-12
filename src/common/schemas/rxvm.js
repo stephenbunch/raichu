@@ -16,6 +16,8 @@ function( Celebi, list, $tracker, formatObject, VM_DEBUG, log ) {
         return list( node.transform( transform ) );
       } else if ( node.attributes.type === 'shape' ) {
         return vm( node );
+      } else if ( node.attributes.type === 'struct' ) {
+        return node.transform( transform );
       } else {
         return node;
       }
